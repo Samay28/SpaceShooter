@@ -1,6 +1,7 @@
 #pragma once
 #include "raylib.h"
 
+class Projectile; // Forward declaration of Projectile class
 class Player
 {
 
@@ -11,9 +12,12 @@ public:
     void Render() const;
 
 
+    bool WantsToShoot() const;
+    void Fire();
+    Vector2 GetProjectileSpawnPos() const;
 private:
     void Move(float deltaTime);
-    void Shoot();
+    void UpdateCooldown(float deltaTime);
 
 private:
 

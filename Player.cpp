@@ -13,12 +13,7 @@ Player::Player(Vector3 startPos)
 void Player::Update(float deltaTime)
 {
     Move(deltaTime);
-    Shoot();
-
-    if(m_shootCooldown > 0.0f)
-    {
-        m_shootCooldown -= deltaTime;
-    }
+    UpdateCooldown(deltaTime);
 }
 
 void Player::Move(float deltaTime)
@@ -67,13 +62,32 @@ void Player::Move(float deltaTime)
     );
 }
 
-void Player::Shoot()
+void Player::Fire()
 {
-    if (IsKeyDown(KEY_SPACE) && m_shootCooldown <= 0.f)
+    m_shootCooldown = m_shootInterval; // Reset the cooldown timer after shooting
+}
+
+void Player::UpdateCooldown(float deltaTime)
+{
+    if (m_shootCooldown > 0.0f)
     {
-        TraceLog(LOG_INFO, "Player shoots!");
-        m_shootCooldown = m_shootInterval; // Reset the cooldown
+        m_shootCooldown -= deltaTime;
+
+        if (m_shootCooldown < 0.0f)
+        {
+            m_shootCooldown = 0.0f;
+        }
     }
+}
+
+bool Player::WantsToShoot() const
+{
+    return IsKeyDown(KEY_SPACE) && m_shootCooldown <= 0.0f;
+}
+
+Vector2 Player::GetProjectileSpawnPos() const
+{
+    return { m_position.x, m_position.y - 18.0f }; // Spawn the projectile slightly above the player
 }
 
 void Player::Render() const
