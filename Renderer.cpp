@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "raylib.h"
 
 Renderer::Renderer(
     int screenWidth,
@@ -24,7 +25,8 @@ Renderer::~Renderer()
 void Renderer::BeginFrame()
 {
     BeginDrawing();
-    ClearBackground(DARKBLUE);
+
+    ClearBackground(BLACK);
 }
 
 void Renderer::EndFrame()
@@ -35,14 +37,4 @@ void Renderer::EndFrame()
 bool Renderer::ShouldClose() const
 {
     return WindowShouldClose();
-}
-
-int Renderer::GetScreenWidth() const
-{
-    return m_screenWidth;
-}
-
-int Renderer::GetScreenHeight() const
-{
-    return m_screenHeight;
 }
