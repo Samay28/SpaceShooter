@@ -123,20 +123,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="MovementSystem.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Projectile.h" />
+    <ClInclude Include="PlayerData.h" />
+    <ClInclude Include="Position.h" />
+    <ClInclude Include="ProjectileData.h" />
+    <ClInclude Include="ProjectileSystem.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Velocity.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GameWorld.h" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameWorld.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MovementSystem.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="ProjectileSystem.cpp" />
     <ClCompile Include="Renderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

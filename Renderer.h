@@ -1,5 +1,6 @@
 #pragma once
 
+class GameWorld;
 class Renderer
 {
 public:
@@ -10,6 +11,8 @@ public:
     void EndFrame();
 
     bool ShouldClose() const;
+
+    void Render(const GameWorld& world);
 
 private:
     int m_screenWidth;

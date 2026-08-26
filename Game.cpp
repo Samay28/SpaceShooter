@@ -25,15 +25,38 @@ void Game::Update(float deltaTime)
 
     //--------------Projectile Management----------------
     HandlePlayerShooting();
-    UpdateProjectiles(deltaTime);
-    RemoveDeadProjectiles();
+    m_movementSystem.Update(m_world, deltaTime);
+    m_projectileSystem.Update(m_world, deltaTime);
+    CleanupProjectiles(m_world);
 }
 
+void Game::CleanupProjectiles(GameWorld& world)
+{
+    for (size_t i = 0; i < world.projectiles.size();)
+    {
+        if (world.projectiles[i].lifetime <= 0.0f)
+        {
+            // For now, remove the corresponding data.
+            world.projectiles.erase(
+                world.projectiles.begin() + i);
+
+            world.positions.erase(
+                world.positions.begin() + i);
+
+            world.velocities.erase(
+                world.velocities.begin() + i);
+        }
+        else
+        {
+            ++i;
+        }
+    }
+}
 void Game::Render()
 {
     m_renderer.BeginFrame(); // Start drawing
     m_player.Render(); // Render the player
-    RenderProjectile(); // Render all projectiles
+    m_renderer.Render(m_world); // Render the projectiles
     m_renderer.EndFrame(); // Finish drawing 
 }
 
@@ -52,42 +75,20 @@ void Game::HandlePlayerShooting()
         -m_projectileSpeed
     };
 
-    //track the projectile in the vector of projectiles
-    m_projectiles.emplace_back(
-        spawnPosition,
-        velocity
+    // Create a new projectile entity
+    Projectile projectile{};
+    projectile.owner = 0; // player has ID 0
+    projectile.damage = 10.0f; // Example damage value
+    projectile.lifetime = 2.0f; // Example lifetime value
+
+    // Add the projectile to the world
+    m_world.projectiles.push_back(projectile);
+    m_world.velocities.push_back(
+        Velocity{ velocity }
     );
+    m_world.positions.push_back(Position{ spawnPosition });
 
     m_player.Fire();
 }
 
-void Game::UpdateProjectiles(float deltaTime)
-{
-    for(Projectile& p : m_projectiles)
-    {
-        p.Update(deltaTime);
-    }
-}
 
-void Game::RenderProjectile()
-{
-    for (const Projectile& projectile : m_projectiles)
-    {
-        projectile.Render();
-    }
-}
-
-void Game::RemoveDeadProjectiles()
-{
-    // Remove projectiles that are no longer alive
-    m_projectiles.erase(
-        std::remove_if(
-            m_projectiles.begin(),
-            m_projectiles.end(),
-            [](const Projectile& projectile)
-            {
-                return !projectile.isAlive();
-            }),
-        m_projectiles.end()
-    );
-}

@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "GameWorld.h"
 #include "raylib.h"
 
 Renderer::Renderer(
@@ -37,4 +38,14 @@ void Renderer::EndFrame()
 bool Renderer::ShouldClose() const
 {
     return WindowShouldClose();
+}
+
+void Renderer::Render(const GameWorld& world)
+{
+    for (size_t i = 0; i < world.projectiles.size(); ++i)
+    {
+        const Vector2 pos = world.positions[i].value;
+
+        DrawCircleV(pos, 5.0f, YELLOW);
+    }
 }
