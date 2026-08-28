@@ -21,13 +21,55 @@ void Game::Run()
 
 void Game::Update(float deltaTime)
 {
+    // ---------------- Player ----------------
+
     m_player.Update(deltaTime);
 
-    //--------------Projectile Management----------------
     HandlePlayerShooting();
-    m_movementSystem.Update(m_world, deltaTime);
-    m_projectileSystem.Update(m_world, deltaTime);
+
+    // ---------------- Enemy Spawning ----------------
+
+    m_spawnSystem.Update(
+        m_world,
+        deltaTime);
+
+    // ---------------- Enemy AI ----------------
+
+    m_aiSystem.Update(
+        m_world,
+        m_player.GetPosition(),
+        deltaTime);
+
+    // ---------------- Movement ----------------
+
+    m_movementSystem.Update(
+        m_world,
+        deltaTime);
+
+    // ---------------- Projectiles ----------------
+
+    m_projectileSystem.Update(
+        m_world,
+        deltaTime);
+
+    // ---------------- Collision ----------------
+
+    m_collisionSystem.Update(
+        m_world);
+
+    // ---------------- Cleanup ----------------
+
     CleanupProjectiles(m_world);
+
+    CleanupEnemies(m_world);
+}
+
+void Game::Render()
+{
+    m_renderer.BeginFrame(); // Start drawing
+    m_player.Render(); // Render the player
+    m_renderer.Render(m_world); // Render the projectiles
+    m_renderer.EndFrame(); // Finish drawing 
 }
 
 void Game::CleanupProjectiles(GameWorld& world)
@@ -40,11 +82,11 @@ void Game::CleanupProjectiles(GameWorld& world)
             world.projectiles.erase(
                 world.projectiles.begin() + i);
 
-            world.positions.erase(
-                world.positions.begin() + i);
+            world.projectilePositions.erase(
+                world.projectilePositions.begin() + i);
 
-            world.velocities.erase(
-                world.velocities.begin() + i);
+            world.projectileVelocities.erase(
+                world.projectileVelocities.begin() + i);
         }
         else
         {
@@ -52,12 +94,28 @@ void Game::CleanupProjectiles(GameWorld& world)
         }
     }
 }
-void Game::Render()
+
+void Game::CleanupEnemies(GameWorld& world)
 {
-    m_renderer.BeginFrame(); // Start drawing
-    m_player.Render(); // Render the player
-    m_renderer.Render(m_world); // Render the projectiles
-    m_renderer.EndFrame(); // Finish drawing 
+    for (size_t i = 0; i < world.enemies.size();)
+    {
+        if(world.enemyHealth[i].currentHealth <= 0.0f)
+        {
+           
+            world.enemies.erase(
+                world.enemies.begin() + i);
+            world.enemyHealth.erase(
+                world.enemyHealth.begin() + i);
+            world.enemyPositions.erase(
+                world.enemyPositions.begin() + i);
+            world.enemyVelocities.erase(
+                world.enemyVelocities.begin() + i);
+        }
+        else
+        {
+            ++i;
+        }
+    }
 }
 
 void Game::HandlePlayerShooting()
@@ -78,15 +136,15 @@ void Game::HandlePlayerShooting()
     // Create a new projectile entity
     Projectile projectile{};
     projectile.owner = 0; // player has ID 0
-    projectile.damage = 10.0f; // Example damage value
+    projectile.damage = 50.0f; // Example damage value
     projectile.lifetime = 2.0f; // Example lifetime value
 
     // Add the projectile to the world
     m_world.projectiles.push_back(projectile);
-    m_world.velocities.push_back(
-        Velocity{ velocity }
-    );
-    m_world.positions.push_back(Position{ spawnPosition });
+    m_world.projectilePositions.push_back(
+        Position{ spawnPosition });
+    m_world.projectileVelocities.push_back(
+        Velocity{ velocity });
 
     m_player.Fire();
 }

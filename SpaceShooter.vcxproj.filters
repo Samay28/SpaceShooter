@@ -25,12 +25,12 @@
     <Filter Include="Source Files\Systems">
       <UniqueIdentifier>{89f60177-7230-4548-bf40-7b2bb7011987}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Core">
+      <UniqueIdentifier>{76dbbb51-b85f-4440-8722-d35de2ce0ae4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
@@ -57,11 +57,32 @@
     <ClInclude Include="PlayerData.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Health.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="AISystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="GameWorld.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Core</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -87,6 +108,15 @@
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
     <ClCompile Include="MovementSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawnSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="AISystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
   </ItemGroup>

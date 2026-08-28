@@ -123,8 +123,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AISystem.h" />
+    <ClInclude Include="CollisionSystem.h" />
+    <ClInclude Include="DamageSystem.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Health.h" />
     <ClInclude Include="MovementSystem.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerData.h" />
@@ -132,6 +137,7 @@
     <ClInclude Include="ProjectileData.h" />
     <ClInclude Include="ProjectileSystem.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="SpawnSystem.h" />
     <ClInclude Include="Velocity.h" />
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +145,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AISystem.cpp" />
+    <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameWorld.cpp" />
@@ -147,6 +155,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ProjectileSystem.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="SpawnSystem.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

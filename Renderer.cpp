@@ -41,11 +41,20 @@ bool Renderer::ShouldClose() const
 }
 
 void Renderer::Render(const GameWorld& world)
-{
+{   
+    // Render projectiles
     for (size_t i = 0; i < world.projectiles.size(); ++i)
     {
-        const Vector2 pos = world.positions[i].value;
+        const Vector2 pos = world.projectilePositions[i].value;
+        DrawCircleV(pos, 4.0f, YELLOW);
+    }
 
-        DrawCircleV(pos, 5.0f, YELLOW);
+    // Render enemies
+    for(size_t i=0; i<world.enemies.size(); ++i)
+    {
+        DrawCircleV(
+            world.enemyPositions[i].value,
+            world.enemies[i].radius,
+            RED);
     }
 }

@@ -15,6 +15,8 @@ public:
     bool WantsToShoot() const;
     void Fire();
     Vector2 GetProjectileSpawnPos() const;
+
+    Vector2 GetPosition() const { return m_position; }
 private:
     void Move(float deltaTime);
     void UpdateCooldown(float deltaTime);
