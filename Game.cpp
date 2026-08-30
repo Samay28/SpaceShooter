@@ -1,11 +1,26 @@
 #include "Game.h"
 #include "raylib.h" // Include raylib for timing functions and etc since only renderer is abstracted 
 
-Game::Game() : m_renderer(1200, 720, "Space Shooter ")
-, m_player(
-    { 640.f,
-    360.f })
+Game::Game()
+    : m_renderer(1200, 720, "Space Shooter")
+    , m_player({ 640.0f, 600.0f })
+    , m_projectileSpeed(500.0f)
 {
+    if (!m_enemyDatabase.Load("assets/enemies.txt"))
+    {
+        TraceLog(
+            LOG_ERROR,
+            "Failed to load enemies.txt"
+        );
+    }
+
+    if (!m_weaponDatabase.Load("assets/weapons.txt"))
+    {
+        TraceLog(
+            LOG_ERROR,
+            "Failed to load weapons.txt"
+        );
+    }
 }
 
 void Game::Run()
@@ -31,14 +46,24 @@ void Game::Update(float deltaTime)
 
     m_spawnSystem.Update(
         m_world,
+        m_enemyDatabase,
         deltaTime);
 
     // ---------------- Enemy AI ----------------
 
     m_aiSystem.Update(
         m_world,
+        m_enemyDatabase,
         m_player.GetPosition(),
         deltaTime);
+
+    m_weaponSystem.Update(
+        m_world,
+        m_enemyDatabase,
+        m_weaponDatabase,
+        m_player.GetPosition(),
+        deltaTime
+    );
 
     // ---------------- Movement ----------------
 
@@ -55,7 +80,7 @@ void Game::Update(float deltaTime)
     // ---------------- Collision ----------------
 
     m_collisionSystem.Update(
-        m_world);
+        m_world,m_player, m_enemyDatabase);
 
     // ---------------- Cleanup ----------------
 
@@ -135,9 +160,9 @@ void Game::HandlePlayerShooting()
 
     // Create a new projectile entity
     Projectile projectile{};
-    projectile.owner = 0; // player has ID 0
+    projectile.owner = ProjectileOwner::Player;
     projectile.damage = 50.0f; // Example damage value
-    projectile.lifetime = 2.0f; // Example lifetime value
+    projectile.lifetime = 5.0f; // Example lifetime value
 
     // Add the projectile to the world
     m_world.projectiles.push_back(projectile);

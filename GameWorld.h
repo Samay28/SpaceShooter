@@ -14,10 +14,6 @@ class GameWorld
 public:
     EntityID CreateEntity(); 
 
-    //runtime data container for the game world
-    std::vector<Position> positions;
-    std::vector<Velocity> velocities;
-
     //---------Projectiles----------------
     std::vector<Position> projectilePositions;
     std::vector<Velocity> projectileVelocities;

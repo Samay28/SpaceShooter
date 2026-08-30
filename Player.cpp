@@ -7,6 +7,8 @@ Player::Player(Vector3 startPos)
     , m_moveSpeed{200.0f}
     , m_shootCooldown{0.0f}
     , m_shootInterval{0.5f} // 0.5 seconds between shots
+    , m_health{ 100.0f }
+    , m_maxHealth{ 100.0f }
 {
 }
 
@@ -14,6 +16,15 @@ void Player::Update(float deltaTime)
 {
     Move(deltaTime);
     UpdateCooldown(deltaTime);
+}
+
+void Player::TakeDamage(float damage)
+{
+    m_health -= damage;
+    if (m_health < 0.0f)
+    {
+        m_health = 0.0f; // Ensure health doesn't go below zero
+    }
 }
 
 void Player::Move(float deltaTime)

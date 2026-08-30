@@ -10,6 +10,10 @@
 #include "CollisionSystem.h"
 #include "ProjectileSystem.h"
 
+#include "EnemyDatabase.h"
+#include "WeaponDatabase.h"
+#include "WeaponSystem.h"
+
 class Game
 {
 public:
@@ -42,6 +46,11 @@ private:
     SpawnSystem m_spawnSystem;
     AISystem m_aiSystem;
     CollisionSystem m_collisionSystem;
+    WeaponSystem m_weaponSystem;
+
+    EnemyDatabase m_enemyDatabase;
+    WeaponDatabase m_weaponDatabase;
+
 
     //--------------Projectile Management----------------
     float m_projectileSpeed = 400.0f; // Speed of the projectiles

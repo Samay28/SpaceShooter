@@ -1,14 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include "EnemyDefinition.h"
 
-enum class EnemyType : uint8_t
-{
-    Basic,
-    duo,
-    Fast,
-    Tank
-};
 
 enum class EnemyState : uint8_t
 {
@@ -25,12 +19,9 @@ struct Enemy
 
     float stateTimer; 
 
-    float attackDuration;
+    Vector2 targetPosition;
 
-    float moveSpeed;
-
-    float health;
-
-    float radius;
+    
+    float weaponCooldown;
 };
 

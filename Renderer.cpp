@@ -42,11 +42,26 @@ bool Renderer::ShouldClose() const
 
 void Renderer::Render(const GameWorld& world)
 {   
-    // Render projectiles
+    // Render player projectiles
     for (size_t i = 0; i < world.projectiles.size(); ++i)
+    {   
+        const Projectile& projectile = world.projectiles[i];
+        if (projectile.owner == ProjectileOwner::Player)
+        {
+            const Vector2 pos = world.projectilePositions[i].value;
+            DrawCircleV(pos, 4.0f, YELLOW);
+        }
+    }
+
+    //Render enemy projectiles
+    for(size_t i = 0; i < world.projectiles.size(); ++i)
     {
-        const Vector2 pos = world.projectilePositions[i].value;
-        DrawCircleV(pos, 4.0f, YELLOW);
+        const Projectile& projectile = world.projectiles[i];
+        if (projectile.owner == ProjectileOwner::Enemy)
+        {
+            const Vector2 pos = world.projectilePositions[i].value;
+            DrawCircleV(pos, 4.0f, RED);
+        }
     }
 
     // Render enemies
@@ -54,7 +69,7 @@ void Renderer::Render(const GameWorld& world)
     {
         DrawCircleV(
             world.enemyPositions[i].value,
-            world.enemies[i].radius,
+            15.f,
             RED);
     }
 }

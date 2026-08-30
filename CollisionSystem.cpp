@@ -1,29 +1,50 @@
 #include "CollisionSystem.h"
 #include "raymath.h"
 
-void CollisionSystem::Update(GameWorld& world)
+void CollisionSystem::Update(GameWorld& world, Player& player, const EnemyDatabase& enemyDatabase)
 {
     // Check for collisions between projectiles and enemies
 
     for (size_t projectileIndex = 0; projectileIndex < world.projectiles.size(); ++projectileIndex)
-    {
+    {   
+        const Projectile& projectile = world.projectiles[projectileIndex];
         const Vector2 projectilePostion = world.projectilePositions[projectileIndex].value;
 
-        for (size_t enemyIndex = 0; enemyIndex < world.enemies.size(); ++enemyIndex)
-        {   
-            // Get the enemy's position
-            const Vector2 enemyPosition = world.enemyPositions[enemyIndex].value;
-
-            // Calculate the distance between the projectile and the enemy
-            float distance = Vector2Distance(projectilePostion, enemyPosition);
-
-            // Check if the distance is less than the sum of their radii (collision detection)
-            if (distance <= world.enemies[enemyIndex].radius + 4.f)
+        //-------------------- Player Projectile vs Enemy Collision --------------------
+        if (projectile.owner == ProjectileOwner::Player)
+        {
+            for (size_t i = 0; i < world.enemies.size(); ++i)
             {
-                world.enemyHealth[enemyIndex].currentHealth -= world.projectiles[projectileIndex].damage;
+                const Enemy& enemy = world.enemies[i];
+                const Vector2 enemyPosition = world.enemyPositions[i].value;
 
-                world.projectiles[projectileIndex].lifetime = 0.0f; // Mark the projectile for removal
-                break; // Exit the inner loop since the projectile has hit an enemy
+                const float distance = Vector2Distance(projectilePostion, enemyPosition);
+                const EnemyDefinition& definition = enemyDatabase.Get(enemy.type);
+
+                if (distance <= definition.radius + 4.f) 
+                {
+                    // Collision detected, apply damage to the enemy
+                    world.enemyHealth[i].currentHealth -= projectile.damage;
+                    // Mark the projectile for removal by setting its lifetime to 0
+                    world.projectiles[projectileIndex].lifetime = 0.0f;
+
+                    break; // Exit the loop since the projectile can only hit one enemy
+                }
+            }
+        }
+
+        //-------------------- Enemy Projectile vs Player Collision --------------------
+        else
+        {
+            const Vector2 playerPosition = player.GetPosition();
+            const float distance = Vector2Distance(projectilePostion, playerPosition);
+
+            if(distance <= 15.f)
+            {
+                // Collision detected, apply damage to the player
+                player.TakeDamage(projectile.damage);
+                // Mark the projectile for removal by setting its lifetime to 0
+                world.projectiles[projectileIndex].lifetime = 0.0f;
             }
         }
     }

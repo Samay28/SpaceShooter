@@ -17,6 +17,9 @@ public:
     Vector2 GetProjectileSpawnPos() const;
 
     Vector2 GetPosition() const { return m_position; }
+
+    void TakeDamage(float damage);
+    float GetHealth() const { return m_health; }
 private:
     void Move(float deltaTime);
     void UpdateCooldown(float deltaTime);
@@ -30,5 +33,8 @@ private:
 
     float m_shootCooldown;
     float m_shootInterval;
+
+    float m_health;
+    float m_maxHealth;
 };
 

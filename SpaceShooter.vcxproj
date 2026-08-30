@@ -126,7 +126,10 @@
     <ClInclude Include="AISystem.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="DamageSystem.h" />
+    <ClInclude Include="DataParser.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyDatabase.h" />
+    <ClInclude Include="EnemyDefinition.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Health.h" />
@@ -139,6 +142,9 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SpawnSystem.h" />
     <ClInclude Include="Velocity.h" />
+    <ClInclude Include="WeaponDatabase.h" />
+    <ClInclude Include="WeaponDefinition.h" />
+    <ClInclude Include="WeaponSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GameWorld.h" />
@@ -147,6 +153,8 @@
   <ItemGroup>
     <ClCompile Include="AISystem.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
+    <ClCompile Include="DataParser.cpp" />
+    <ClCompile Include="EnemyDatabase.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameWorld.cpp" />
@@ -156,6 +164,8 @@
     <ClCompile Include="ProjectileSystem.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SpawnSystem.cpp" />
+    <ClCompile Include="WeaponDatabase.cpp" />
+    <ClCompile Include="WeaponSystem.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
