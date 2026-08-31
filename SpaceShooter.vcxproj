@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ActivePowerup.h" />
     <ClInclude Include="AISystem.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="DamageSystem.h" />
@@ -137,6 +138,10 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerData.h" />
     <ClInclude Include="Position.h" />
+    <ClInclude Include="PowerDefinition.h" />
+    <ClInclude Include="PowerupSystem.h" />
+    <ClInclude Include="Powerup.h" />
+    <ClInclude Include="PowerupDatabase.h" />
     <ClInclude Include="ProjectileData.h" />
     <ClInclude Include="ProjectileSystem.h" />
     <ClInclude Include="Renderer.h" />
@@ -161,6 +166,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MovementSystem.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PowerupDatabase.cpp" />
+    <ClCompile Include="PowerupSystem.cpp" />
     <ClCompile Include="ProjectileSystem.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SpawnSystem.cpp" />

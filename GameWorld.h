@@ -7,12 +7,20 @@
 #include "Health.h"
 #include "ProjectileData.h"
 
+#include "Powerup.h"
+#include "ActivePowerup.h"
+
 #include <vector>
 
 class GameWorld
 {
 public:
     EntityID CreateEntity(); 
+
+    //---------Player----------------
+    EntityID playerEntity = INVALID_ENTITY_ID;
+    std::vector<ActivePowerup> playerPowerups;
+
 
     //---------Projectiles----------------
     std::vector<Position> projectilePositions;
@@ -24,6 +32,10 @@ public:
     std::vector<Velocity> enemyVelocities;
     std::vector<Enemy> enemies;
     std::vector<Health> enemyHealth;
+
+    //---------Powerups----------------
+    std::vector<Position> powerupPositions;
+    std::vector<Powerup> powerups;
 
 private:
     EntityID m_nextEntityID = 1; // Start from 1 to avoid using INVALID_ENTITY_ID

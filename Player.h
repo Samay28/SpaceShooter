@@ -8,11 +8,13 @@ class Player
 public:
     explicit Player(Vector3 startPos);
 
-    void Update(float deltaTime);
+    void Update(float deltaTime, float speedMultiplier);
     void Render() const;
 
 
-    bool WantsToShoot() const;
+
+    bool IsShootPressed() const;
+
     void Fire();
     Vector2 GetProjectileSpawnPos() const;
 
@@ -20,8 +22,18 @@ public:
 
     void TakeDamage(float damage);
     float GetHealth() const { return m_health; }
+    void Heal(float amount);
+    float GetMaxHealth() const { return m_maxHealth; }
+
+    void SetShootInterval(float interval) { m_shootInterval = interval; }
+    float GetShootInterval() const { return m_shootInterval; }
+
+    //move speed getter and setter
+    float GetMoveSpeed() const { return m_moveSpeed; }
+    void SetMoveSpeed(float speed) { m_moveSpeed = speed; }
+
 private:
-    void Move(float deltaTime);
+    void Move(float deltaTime, float speedMiltiplier);
     void UpdateCooldown(float deltaTime);
 
 private:

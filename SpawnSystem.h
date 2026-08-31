@@ -3,6 +3,8 @@
 #include "GameWorld.h"
 #include "EnemyDatabase.h"
 
+#include "PowerupDatabase.h"
+
 class SpawnSystem
 {
 public:
@@ -12,5 +14,9 @@ private:
     float m_spawnTimer = 0.0f;
     float m_spawnInterval = 1.0f;
 
+    float m_powerupTimer = 5.f;
+    float m_powerupInterval = 5.f;
+
     void SpawnEnemy(GameWorld& world, const EnemyDatabase& enemyDatabase);
+    void SpawnPowerup(GameWorld& world); // no need for database here, as we can randomly choose a enum
 };

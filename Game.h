@@ -14,6 +14,8 @@
 #include "WeaponDatabase.h"
 #include "WeaponSystem.h"
 
+#include "PowerupSystem.h"
+
 class Game
 {
 public:
@@ -27,7 +29,7 @@ private:
     void Render();
 
     //--------------Projectile Management----------------
-    void HandlePlayerShooting();
+    /*void HandlePlayerShooting();*/
     void CleanupProjectiles(GameWorld& world); // Remove dead projectiles from the vector
 
 
@@ -50,6 +52,9 @@ private:
 
     EnemyDatabase m_enemyDatabase;
     WeaponDatabase m_weaponDatabase;
+
+    PowerupSystem m_powerupSystem;
+    PowerupDatabase m_powerupDatabse;
 
 
     //--------------Projectile Management----------------

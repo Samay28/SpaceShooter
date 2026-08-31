@@ -72,4 +72,103 @@ void Renderer::Render(const GameWorld& world)
             15.f,
             RED);
     }
+
+    //Render Powerups
+    for (size_t i = 0; i < world.powerups.size(); ++i)
+    {
+        const Vector2 position = world.powerupPositions[i].value;
+        Color color = WHITE;
+
+        switch (world.powerups[i].type)
+        {
+        case PowerupType::DoubleShot:
+            color = BLUE;
+            break;
+
+        case PowerupType::TripleShot:
+            color = PURPLE;
+            break;
+
+        case PowerupType::RapidFire:
+            color = YELLOW;
+            break;
+
+        case PowerupType::SpeedBoost:
+            color = ORANGE;
+            break;
+
+        case PowerupType::Shield:
+            color = SKYBLUE;
+            break;
+
+        case PowerupType::Heal:
+            color = GREEN;
+            break;
+        }
+
+        DrawCircleV(
+            position,
+            10.0f,
+            color
+        );
+        DrawPowerupUI(world);
+    }
+}
+
+void Renderer::DrawPowerupUI(const GameWorld& world)
+{
+    int y = 50;
+
+    for (const ActivePowerup& powerup :
+        world.playerPowerups)
+    {
+        const char* name = "UNKNOWN";
+
+        switch (powerup.type)
+        {
+        case PowerupType::DoubleShot:
+            name = "DOUBLE SHOT";
+            break;
+
+        case PowerupType::TripleShot:
+            name = "TRIPLE SHOT";
+            break;
+
+        case PowerupType::RapidFire:
+            name = "RAPID FIRE";
+            break;
+
+        case PowerupType::SpeedBoost:
+            name = "SPEED BOOST";
+            break;
+
+        case PowerupType::Shield:
+            name = "SHIELD";
+            break;
+
+        default:
+            break;
+        }
+
+        DrawText(
+            name,
+            20,
+            y,
+            20,
+            WHITE
+        );
+
+        DrawText(
+            TextFormat(
+                "%.1f",
+                powerup.remainingTime
+            ),
+            180,
+            y,
+            20,
+            WHITE
+        );
+
+        y += 25;
+    }
 }

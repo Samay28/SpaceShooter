@@ -1,14 +1,24 @@
 #include "SpawnSystem.h"
+#include "Powerup.h"
 #include "raymath.h"
 
 void SpawnSystem::Update(GameWorld& world, const EnemyDatabase& enemyDatabase, float deltaTime)
 {
     m_spawnTimer -= deltaTime;
 
+    //-------------- Enemy spawning logic ----------------
     if(m_spawnTimer <= 0.0f)
     {
         SpawnEnemy(world, enemyDatabase);
         m_spawnTimer = m_spawnInterval;
+    }
+
+    //-------------- Powerup spawning logic ----------------
+    m_powerupTimer -= deltaTime;
+    if(m_powerupTimer <= 0.0f)
+    {
+        SpawnPowerup(world);
+        m_powerupTimer = m_powerupInterval;
     }
 }
 
@@ -83,4 +93,25 @@ void SpawnSystem::SpawnEnemy(GameWorld& world, const EnemyDatabase& enemyDatabas
 
     world.enemyPositions.push_back(position);
     world.enemyVelocities.push_back(velocity);
+}
+
+void SpawnSystem::SpawnPowerup(GameWorld& world)
+{
+    const int typeIndex = GetRandomValue(0, static_cast<int>(PowerupType::Heal)); // Because Heal is the last enum value, we can use it to get the range of powerup types
+
+    Powerup powerup{};
+    powerup.type = static_cast<PowerupType>(typeIndex);
+    
+    Position position{};
+    position.value = {
+       static_cast<float>(
+           GetRandomValue(50, GetScreenWidth() - 50)
+       ),
+       static_cast<float>(
+           GetRandomValue(50, GetScreenHeight() - 50)
+       )
+    };
+
+    world.powerups.push_back(powerup);
+    world.powerupPositions.push_back(position);
 }

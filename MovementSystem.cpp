@@ -1,5 +1,6 @@
 #include "MovementSystem.h"
 
+
 void MovementSystem::Update(GameWorld& world, float deltaTime)
 {   
     //---------------- Projectiles ----------------
@@ -16,4 +17,6 @@ void MovementSystem::Update(GameWorld& world, float deltaTime)
         world.enemyPositions[i].value.x += world.enemyVelocities[i].value.x * deltaTime;
         world.enemyPositions[i].value.y += world.enemyVelocities[i].value.y * deltaTime;
     }
+
+
 }

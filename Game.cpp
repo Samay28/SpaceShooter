@@ -21,6 +21,13 @@ Game::Game()
             "Failed to load weapons.txt"
         );
     }
+    if(!m_powerupDatabse.Load("assets/powerups.txt"))
+    {
+        TraceLog(
+            LOG_ERROR,
+            "Failed to load powerups.txt"
+        );
+    }
 }
 
 void Game::Run()
@@ -35,12 +42,53 @@ void Game::Run()
 }
 
 void Game::Update(float deltaTime)
-{
+{   
+    //---------------- Powerup System ----------------
+    m_powerupSystem.Update(
+        m_world,
+        m_player,
+        m_powerupDatabse,
+        deltaTime);
+
+
     // ---------------- Player ----------------
+    float speedMultiplier = 1.0f;
+    for(const ActivePowerup& powerup : m_world.playerPowerups)
+    {
+        if (powerup.type == PowerupType::SpeedBoost)
+        {
+            speedMultiplier *= powerup.value;
+        }
+    }
 
-    m_player.Update(deltaTime);
+    m_player.Update(deltaTime, speedMultiplier);
+    
+    //  we need to check if the rapid fire powerup is active and set the shoot interval accordingly
+    bool rapidFireActive = false;
 
-    HandlePlayerShooting();
+    for (const ActivePowerup& powerup :
+        m_world.playerPowerups)
+    {
+        if (powerup.type ==
+            PowerupType::RapidFire)
+        {
+            rapidFireActive = true;
+            break;
+        }
+    }
+
+    if (rapidFireActive)
+    {
+        m_player.SetShootInterval(
+            0.5f / 2.0f
+        );
+    }
+    else
+    {
+        m_player.SetShootInterval(
+            0.5f
+        );
+    }
 
     // ---------------- Enemy Spawning ----------------
 
@@ -59,6 +107,7 @@ void Game::Update(float deltaTime)
 
     m_weaponSystem.Update(
         m_world,
+        m_player,
         m_enemyDatabase,
         m_weaponDatabase,
         m_player.GetPosition(),
@@ -143,35 +192,35 @@ void Game::CleanupEnemies(GameWorld& world)
     }
 }
 
-void Game::HandlePlayerShooting()
-{
-    if(!m_player.WantsToShoot())
-    {
-        return;
-    }
-
-    const Vector2 spawnPosition =
-        m_player.GetProjectileSpawnPos();
-
-    const Vector2 velocity = {
-        0.0f,
-        -m_projectileSpeed
-    };
-
-    // Create a new projectile entity
-    Projectile projectile{};
-    projectile.owner = ProjectileOwner::Player;
-    projectile.damage = 50.0f; // Example damage value
-    projectile.lifetime = 5.0f; // Example lifetime value
-
-    // Add the projectile to the world
-    m_world.projectiles.push_back(projectile);
-    m_world.projectilePositions.push_back(
-        Position{ spawnPosition });
-    m_world.projectileVelocities.push_back(
-        Velocity{ velocity });
-
-    m_player.Fire();
-}
+//void Game::HandlePlayerShooting()
+//{
+//    if(!m_player.IsShootPressed())
+//    {
+//        return;
+//    }
+//
+//    const Vector2 spawnPosition =
+//        m_player.GetProjectileSpawnPos();
+//
+//    const Vector2 velocity = {
+//        0.0f,
+//        -m_projectileSpeed
+//    };
+//
+//    // Create a new projectile entity
+//    Projectile projectile{};
+//    projectile.owner = ProjectileOwner::Player;
+//    projectile.damage = 50.0f; // Example damage value
+//    projectile.lifetime = 5.0f; // Example lifetime value
+//
+//    // Add the projectile to the world
+//    m_world.projectiles.push_back(projectile);
+//    m_world.projectilePositions.push_back(
+//        Position{ spawnPosition });
+//    m_world.projectileVelocities.push_back(
+//        Velocity{ velocity });
+//
+//    m_player.Fire();
+//}
 
 

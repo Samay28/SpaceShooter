@@ -42,10 +42,42 @@ void CollisionSystem::Update(GameWorld& world, Player& player, const EnemyDataba
             if(distance <= 15.f)
             {
                 // Collision detected, apply damage to the player
-                player.TakeDamage(projectile.damage);
+                //but only if the player doesn't have a shield
+                if(HasShield(world))
+                {
+                    RemoveShield(world);
+                }
+                else
+                {
+                    player.TakeDamage(projectile.damage);
+                }
                 // Mark the projectile for removal by setting its lifetime to 0
                 world.projectiles[projectileIndex].lifetime = 0.0f;
             }
+        }
+    }
+}
+
+bool CollisionSystem::HasShield(const GameWorld& world) const
+{
+    for (const ActivePowerup& powerup : world.playerPowerups)
+    {
+        if(powerup.type == PowerupType::Shield)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void CollisionSystem::RemoveShield(GameWorld& world)
+{
+    for(size_t i= 0; i < world.playerPowerups.size(); ++i)
+    {
+        if(world.playerPowerups[i].type == PowerupType::Shield)
+        {
+            world.playerPowerups.erase(world.playerPowerups.begin() + i);
+            return;
         }
     }
 }

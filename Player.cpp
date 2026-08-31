@@ -12,9 +12,9 @@ Player::Player(Vector3 startPos)
 {
 }
 
-void Player::Update(float deltaTime)
+void Player::Update(float deltaTime, float speedMultiplier)
 {
-    Move(deltaTime);
+    Move(deltaTime, speedMultiplier);
     UpdateCooldown(deltaTime);
 }
 
@@ -27,7 +27,17 @@ void Player::TakeDamage(float damage)
     }
 }
 
-void Player::Move(float deltaTime)
+void Player::Heal(float amount)
+{
+    m_health += amount;
+    if (m_health > m_maxHealth)
+    {
+        m_health = m_maxHealth; // Ensure health doesn't exceed max health
+    }
+}
+
+
+void Player::Move(float deltaTime, float speedMultiplier)
 {
     m_velocity = { 0.f,0.f };
     if(IsKeyDown(KEY_W))
@@ -55,8 +65,10 @@ void Player::Move(float deltaTime)
         // Normalize the velocity vector to ensure consistent movement speed in all directions
         m_velocity = Vector2Normalize(m_velocity);
 
-        m_position.x += m_velocity.x * m_moveSpeed * deltaTime;
-        m_position.y += m_velocity.y * m_moveSpeed * deltaTime;
+        const float effectiveSpeed = m_moveSpeed * speedMultiplier;
+
+        m_position.x += m_velocity.x * effectiveSpeed * deltaTime;
+        m_position.y += m_velocity.y * effectiveSpeed * deltaTime;
     }
 
     // Keep player inside screen.
@@ -71,6 +83,11 @@ void Player::Move(float deltaTime)
         20.0f,
         static_cast<float>(GetScreenHeight() - 20) // 20 pixels from the bottom edge
     );
+}
+
+bool Player::IsShootPressed() const
+{
+    return IsKeyDown(KEY_SPACE) && m_shootCooldown <=0.f;
 }
 
 void Player::Fire()
@@ -91,10 +108,6 @@ void Player::UpdateCooldown(float deltaTime)
     }
 }
 
-bool Player::WantsToShoot() const
-{
-    return IsKeyDown(KEY_SPACE) && m_shootCooldown <= 0.0f;
-}
 
 Vector2 Player::GetProjectileSpawnPos() const
 {

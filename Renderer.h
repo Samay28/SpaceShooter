@@ -13,6 +13,7 @@ public:
     bool ShouldClose() const;
 
     void Render(const GameWorld& world);
+    void DrawPowerupUI(const GameWorld& world);
 
 private:
     int m_screenWidth;
