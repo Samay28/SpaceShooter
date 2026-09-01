@@ -1,5 +1,5 @@
 #pragma once
-#include "Powerup.h"
+#include "Components/Powerup.h"
 
 struct PowerupDefinition
 {

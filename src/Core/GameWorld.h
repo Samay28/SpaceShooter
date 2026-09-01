@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Entity.h"
-#include "Position.h"
-#include "Velocity.h"   
-#include "Enemy.h"
-#include "Health.h"
-#include "ProjectileData.h"
+#include "Components/Position.h"
+#include "Components/Velocity.h"   
+#include "Components/Enemy.h"
+#include "Components/Health.h"
+#include "Data/ProjectileData.h"
 
-#include "Powerup.h"
-#include "ActivePowerup.h"
+#include "Components/Powerup.h"
+#include "Components/ActivePowerup.h"
 
 #include <vector>
 

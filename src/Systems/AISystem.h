@@ -1,6 +1,6 @@
 #pragma once
-#include "GameWorld.h"
-#include "EnemyDatabase.h"
+#include "Core/GameWorld.h"
+#include "Data/EnemyDatabase.h"
 
 class AISystem
 {

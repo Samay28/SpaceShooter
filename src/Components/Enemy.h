@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include "EnemyDefinition.h"
+#include "Data/EnemyDefinition.h"
 
 
 enum class EnemyState : uint8_t

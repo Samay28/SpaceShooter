@@ -3,18 +3,19 @@
 #include "Renderer.h"
 #include "Player.h"
 #include <vector>
-#include "GameWorld.h"
-#include "MovementSystem.h"
-#include "SpawnSystem.h"
-#include "AISystem.h"
-#include "CollisionSystem.h"
-#include "ProjectileSystem.h"
+#include "Core/GameWorld.h"
 
-#include "EnemyDatabase.h"
-#include "WeaponDatabase.h"
-#include "WeaponSystem.h"
+#include "Systems/MovementSystem.h"
+#include "Systems/SpawnSystem.h"
+#include "Systems/AISystem.h"
+#include "Systems/CollisionSystem.h"
+#include "Systems/ProjectileSystem.h"
+#include "Systems/WeaponSystem.h"
+#include "Systems/PowerupSystem.h"
 
-#include "PowerupSystem.h"
+#include "Data/EnemyDatabase.h"
+#include "Data/WeaponDatabase.h"
+
 
 
 enum class GameState

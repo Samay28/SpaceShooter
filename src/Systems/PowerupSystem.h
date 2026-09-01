@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GameWorld.h"
-#include "PowerupDatabase.h"
+#include "Core/GameWorld.h"
+#include "Data/PowerupDatabase.h"
 
 class Player;
 

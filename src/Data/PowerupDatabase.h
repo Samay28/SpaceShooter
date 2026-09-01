@@ -1,5 +1,6 @@
 #pragma once
 #include "PowerDefinition.h"
+#include "Components/Powerup.h"
 
 class PowerupDatabase
 {

@@ -1,5 +1,5 @@
 #include "SpawnSystem.h"
-#include "Powerup.h"
+#include "Components/Powerup.h"
 #include "raymath.h"
 
 void SpawnSystem::Update(GameWorld& world, const EnemyDatabase& enemyDatabase, float deltaTime)

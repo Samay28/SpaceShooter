@@ -1,8 +1,8 @@
 #pragma once
 
-#include "GameWorld.h"
-#include "WeaponDatabase.h"
-#include "EnemyDatabase.h"
+#include "Core/GameWorld.h"
+#include "Data/WeaponDatabase.h"
+#include "Data/EnemyDatabase.h"
 
 class Player;
 

@@ -1,8 +1,8 @@
 #include "WeaponSystem.h"
-//#include "raylib.h"
+
 #include "raymath.h"
 #include "Player.h"
-#include "ActivePowerup.h"
+#include "Components/ActivePowerup.h"
 
 void WeaponSystem::Update(GameWorld& world, Player& player,const EnemyDatabase& enemyDatabase, const WeaponDatabase& weaponDatabase, Vector2 playerPos, float deltaTime)
 {   

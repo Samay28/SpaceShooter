@@ -1,9 +1,9 @@
 #pragma once
 
-#include "GameWorld.h"
+#include "Core/GameWorld.h"
 #include "Player.h"
 
-#include "EnemyDatabase.h"
+#include "Data/EnemyDatabase.h"
 
 class CollisionSystem
 {
