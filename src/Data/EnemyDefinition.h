@@ -27,4 +27,6 @@ struct EnemyDefinition
     float attackDurationMax;
 
     WeaponType weaponType;
+
+    int score;
 };

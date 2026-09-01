@@ -143,6 +143,8 @@
     <ClInclude Include="src\Components\Health.h" />
     <ClInclude Include="src\Components\Position.h" />
     <ClInclude Include="src\Components\Powerup.h" />
+    <ClInclude Include="src\Components\ScorePopup.h" />
+    <ClInclude Include="src\Core\GameTimer.h" />
     <ClInclude Include="src\Data\ProjectileData.h" />
     <ClInclude Include="src\Components\Velocity.h" />
     <ClInclude Include="src\Core\Entity.h" />
@@ -164,11 +166,13 @@
     <ClInclude Include="src\Systems\MovementSystem.h" />
     <ClInclude Include="src\Systems\PowerupSystem.h" />
     <ClInclude Include="src\Systems\ProjectileSystem.h" />
+    <ClInclude Include="src\Systems\ScoreSystem.h" />
     <ClInclude Include="src\Systems\SpawnSystem.h" />
     <ClInclude Include="src\Systems\WeaponSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Entity.cpp" />
+    <ClCompile Include="src\Core\GameTimer.cpp" />
     <ClCompile Include="src\Core\GameWorld.cpp" />
     <ClCompile Include="src\Data\DataParser.cpp" />
     <ClCompile Include="src\Data\EnemyDatabase.cpp" />
@@ -183,6 +187,7 @@
     <ClCompile Include="src\Systems\MovementSystem.cpp" />
     <ClCompile Include="src\Systems\PowerupSystem.cpp" />
     <ClCompile Include="src\Systems\ProjectileSystem.cpp" />
+    <ClCompile Include="src\Systems\ScoreSystem.cpp" />
     <ClCompile Include="src\Systems\SpawnSystem.cpp" />
     <ClCompile Include="src\Systems\WeaponSystem.cpp" />
   </ItemGroup>

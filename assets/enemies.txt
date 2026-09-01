@@ -5,14 +5,16 @@ Radius=15
 AttackDurationMin=1.5
 AttackDurationMax=3.0
 Weapon=Single
+Score=50
 
 [Duo]
-Health=20
+Health=30
 Speed=60
 Radius=16
 AttackDurationMin=1.5
 AttackDurationMax=3.0
 Weapon=Double
+Score=75
 
 [Fast]
 Health=20
@@ -21,6 +23,7 @@ Radius=12
 AttackDurationMin=1.0
 AttackDurationMax=2.0
 Weapon=Fast
+Score=100
 
 [Tank]
 Health=60
@@ -29,3 +32,4 @@ Radius=20
 AttackDurationMin=2.0
 AttackDurationMax=4.0
 Weapon=Single
+Score=150

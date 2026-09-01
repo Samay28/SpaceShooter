@@ -10,12 +10,16 @@
 #include "Components/Powerup.h"
 #include "Components/ActivePowerup.h"
 
+#include "Components/ScorePopup.h"
+
 #include <vector>
 
 class GameWorld
 {
 public:
     EntityID CreateEntity(); 
+    int score = 0; // Player's score
+    int highScore = 0; // Player's high score
 
     //---------Player----------------
     EntityID playerEntity = INVALID_ENTITY_ID;
@@ -37,6 +41,10 @@ public:
     std::vector<Position> powerupPositions;
     std::vector<Powerup> powerups;
 
+    //---------Score Popups----------------
+    std::vector<ScorePopup> scorePopup;
+
 private:
     EntityID m_nextEntityID = 1; // Start from 1 to avoid using INVALID_ENTITY_ID
+    
 };

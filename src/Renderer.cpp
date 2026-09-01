@@ -113,13 +113,14 @@ void Renderer::Render(const GameWorld& world)
             color
         );
        
+        DrawScorePopups(world);
 
     }
 }
 
 void Renderer::DrawPowerupUI(const GameWorld& world)
 {
-    int y = 50;
+    int y = 90;
 
     for (const ActivePowerup& powerup :
         world.playerPowerups)
@@ -227,22 +228,57 @@ void Renderer::DrawHealthBar(
     );
 }
 
-void Renderer::DrawHUD(const Player& player, const GameWorld& world)
+void Renderer::DrawScorePopups(const GameWorld& world)
+{
+    for (const ScorePopup& popup : world.scorePopup)
+    {
+        DrawText(
+            TextFormat("+%d", popup.score),
+            static_cast<int>(popup.position.x),
+            static_cast<int>(popup.position.y),
+            20,
+            YELLOW
+        );
+    }
+}
+
+void Renderer::DrawHUD(const Player& player, const GameWorld& world, float remainingTimer)
 {
     DrawHealthBar(player);
+    DrawText(TextFormat("SCORE : %d", world.score), 20, 55, 20, WHITE);
     DrawPowerupUI(world);
+    DrawText(TextFormat("TIME: %03d", static_cast<int>(remainingTimer)), m_screenWidth - 170, 20, 28, WHITE);
 }
  
-void Renderer::DrawGameOver()
-{
+void Renderer::DrawGameOver(const GameWorld& world)
+{   
+    //Dark overlay
+    DrawRectangle(0, 0, m_screenWidth, m_screenHeight, Fade(BLACK, 0.75f));
+
     const int centerX = m_screenWidth / 2;
     const int centerY = m_screenHeight / 2;
 
-    DrawRectangle(0, 0, m_screenWidth, m_screenHeight, Fade(BLACK, 0.5f));
+    //Game Over
+
     const char* title = "GAME OVER";
-    const int titleWidth = MeasureText(title, 40); // Get the width of the text
-    DrawText(title, centerX - titleWidth / 2, centerY - 60, 50, RED);
+    const int titleWidth = MeasureText(title, 50);
+
+    DrawText(title, centerX - titleWidth / 2, centerY - 130, 50, RED);
+
+    //Score
+    const char* scoreText = TextFormat("SCORE: %d", world.score);
+    const int scoreWidth = MeasureText(scoreText, 28);
+
+    DrawText(scoreText, centerX- scoreWidth/2,centerY-40, 28, WHITE);
+
+    //Highscore
+
+    const char* highScoreText = TextFormat("HIGH SCORE: %d", world.highScore);
+    const int highscoreWidth = MeasureText(highScoreText, 28);
+
+    DrawText(highScoreText, centerX-highscoreWidth/2, centerY+10, 28, GOLD);
+
     const char* restartText = "Press R to Restart";
-    const int restartTextWidth = MeasureText(restartText, 20); // Get the width of the text
-    DrawText(restartText, centerX - restartTextWidth / 2, centerY + 10, 24, WHITE);
+    const int restartTextWidth = MeasureText(restartText, 24); // Get the width of the text
+    DrawText(restartText, centerX - restartTextWidth / 2, centerY + 80, 24, WHITE);
 }

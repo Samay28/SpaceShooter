@@ -16,6 +16,9 @@
 #include "Data/EnemyDatabase.h"
 #include "Data/WeaponDatabase.h"
 
+#include "Core/GameTimer.h"
+#include "Systems/ScoreSystem.h"
+
 
 
 enum class GameState
@@ -45,6 +48,7 @@ private:
     void CleanupEnemies(GameWorld& world);
 
     void RestartGame();
+    void EndGame();
 
 private:
     GameWorld m_world;
@@ -72,4 +76,8 @@ private:
 
 
     GameState m_gameState = GameState::Playing;
+
+
+    GameTimer m_gameTimer{ 150.f };
+    ScoreSystem m_scoreSystem;
 };

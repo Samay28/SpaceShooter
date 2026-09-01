@@ -95,6 +95,9 @@ bool EnemyDatabase::Load(
         definition.attackDurationMax =
             getFloat("AttackDurationMax", 3.0f);
 
+        definition.score =
+            getFloat("Score", 100);
+
         definition.weaponType =
             ParseWeaponType(
                 getString(

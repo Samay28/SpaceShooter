@@ -1,20 +1,20 @@
 [Single]
 Damage=10
 FireRate=1.0
-ProjectileSpeed=300
+ProjectileSpeed=500
 ProjectileCount=1
 ProjectileSpread=0
 
 [Double]
 Damage=8
 FireRate=1.0
-ProjectileSpeed=300
+ProjectileSpeed=500
 ProjectileCount=2
 ProjectileSpread=12
 
 [Fast]
 Damage=7
 FireRate=1.5
-ProjectileSpeed=600
+ProjectileSpeed=800
 ProjectileCount=1
 ProjectileSpread=0

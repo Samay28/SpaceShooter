@@ -1,21 +1,21 @@
 [DoubleShot]
-Duration=7
+Duration=10
 Value=2
 
 [TripleShot]
-Duration=7
+Duration=10
 Value=3
 
 [RapidFire]
-Duration=6
+Duration=10
 Value=2
 
 [SpeedBoost]
-Duration=6
+Duration=10
 Value=1.5
 
 [Shield]
-Duration=5
+Duration=10
 Value=1
 
 [Heal]

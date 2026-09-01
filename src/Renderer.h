@@ -16,9 +16,10 @@ public:
     void Render(const GameWorld& world);
     void DrawPowerupUI(const GameWorld& world);
 
-    void DrawHUD(const Player& player, const GameWorld& world);
+    void DrawScorePopups(const GameWorld& world);
+    void DrawHUD(const Player& player, const GameWorld& world, float remainingTime);
     void DrawHealthBar(const Player& player);
-    void DrawGameOver();
+    void DrawGameOver(const GameWorld& world);
 
 private:
     int m_screenWidth;

@@ -5,6 +5,7 @@ Game::Game()
     : m_renderer(1200, 720, "Space Shooter")
     , m_player({ 640.0f, 600.0f })
     , m_projectileSpeed(500.0f)
+    , m_gameTimer(150.f)
 {
     if (!m_enemyDatabase.Load("assets/enemies.txt"))
     {
@@ -28,6 +29,7 @@ Game::Game()
             "Failed to load powerups.txt"
         );
     }
+    m_scoreSystem.LoadHighscore(m_world);
 }
 
 void Game::Run()
@@ -41,6 +43,8 @@ void Game::Run()
     }
 }
 
+
+
 void Game::Update(float deltaTime)
 {   
 
@@ -51,6 +55,14 @@ void Game::Update(float deltaTime)
         {
             RestartGame();
         }
+        return;
+    }
+
+    //----------------- Timer ----------------
+    m_gameTimer.Update(deltaTime);
+    if (m_gameTimer.IsFinished())
+    {
+        EndGame();
         return;
     }
 
@@ -144,8 +156,13 @@ void Game::Update(float deltaTime)
 
     if(m_player.GetHealth() <= 0.0f)
     {
-        m_gameState = GameState::GameOver;
+        EndGame();
     }
+
+    //---------------- Score System ----------------
+    m_scoreSystem.Update(
+        m_world,
+        deltaTime);
 
     // ---------------- Cleanup ----------------
 
@@ -159,10 +176,10 @@ void Game::Render()
     m_renderer.BeginFrame(); // Start drawing
     m_player.Render(); // Render the player
     m_renderer.Render(m_world); // Render the projectiles
-    m_renderer.DrawHUD(m_player, m_world); // Render the HUD
+    m_renderer.DrawHUD(m_player, m_world, m_gameTimer.GetRemainingTime()); // Render the HUD
     if(m_gameState == GameState::GameOver)
     {
-        m_renderer.DrawGameOver(); // Render the game over screen
+        m_renderer.DrawGameOver(m_world); // Render the game over screen
     }
     m_renderer.EndFrame(); // Finish drawing 
 }
@@ -192,24 +209,52 @@ void Game::CleanupProjectiles(GameWorld& world)
 
 void Game::CleanupEnemies(GameWorld& world)
 {
-    for (size_t i = 0; i < world.enemies.size();)
+    size_t i = 0;
+
+    while (i < world.enemies.size())
     {
-        if(world.enemyHealth[i].currentHealth <= 0.0f)
-        {
-           
-            world.enemies.erase(
-                world.enemies.begin() + i);
-            world.enemyHealth.erase(
-                world.enemyHealth.begin() + i);
-            world.enemyPositions.erase(
-                world.enemyPositions.begin() + i);
-            world.enemyVelocities.erase(
-                world.enemyVelocities.begin() + i);
-        }
-        else
+        if (world.enemyHealth[i].currentHealth > 0.0f)
         {
             ++i;
+            continue;
         }
+
+        // Capture information before removal.
+        const Enemy enemy =
+            world.enemies[i];
+
+        const Vector2 deathPosition =
+            world.enemyPositions[i].value;
+
+        m_scoreSystem.RegisterEnemyDeath(
+            world,
+            enemy,
+            deathPosition,
+            m_enemyDatabase
+        );
+
+        const size_t last =
+            world.enemies.size() - 1;
+
+        if (i != last)
+        {
+            world.enemies[i] =
+                world.enemies[last];
+
+            world.enemyHealth[i] =
+                world.enemyHealth[last];
+
+            world.enemyPositions[i] =
+                world.enemyPositions[last];
+
+            world.enemyVelocities[i] =
+                world.enemyVelocities[last];
+        }
+
+        world.enemies.pop_back();
+        world.enemyHealth.pop_back();
+        world.enemyPositions.pop_back();
+        world.enemyVelocities.pop_back();
     }
 }
 
@@ -217,6 +262,10 @@ void Game::RestartGame()
 {
     // Reset the game state
     m_gameState = GameState::Playing;
+    m_world.score = 0;
+
+    m_world.scorePopup.clear();
+    m_gameTimer.Reset();
 
     //player reset and spawner
     m_player.Reset();
@@ -237,7 +286,24 @@ void Game::RestartGame()
 
     m_world.playerPowerups.clear();
 
+    m_spawnSystem.Reset();
+}
 
+void Game::EndGame()
+{
+    m_gameState = GameState::GameOver;
+
+    while (!m_world.scorePopup.empty())
+    {
+        m_world.score += m_world.scorePopup.back().score;
+        m_world.scorePopup.pop_back();
+    }
+
+    if (m_world.score > m_world.highScore)
+    {
+        m_world.highScore = m_world.score;
+        m_scoreSystem.SaveHighscore(m_world);
+    }
 }
 
 
