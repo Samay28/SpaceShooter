@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include "GameWorld.h"
+#include "Player.h"
 #include "raylib.h"
 
 Renderer::Renderer(
@@ -111,7 +112,8 @@ void Renderer::Render(const GameWorld& world)
             10.0f,
             color
         );
-        DrawPowerupUI(world);
+       
+
     }
 }
 
@@ -171,4 +173,76 @@ void Renderer::DrawPowerupUI(const GameWorld& world)
 
         y += 25;
     }
+}
+
+void Renderer::DrawHealthBar(
+    const Player& player)
+{
+    constexpr int x = 20;
+    constexpr int y = 20;
+
+    constexpr int width = 250;
+    constexpr int height = 24;
+
+    const float healthPercent =
+        player.GetHealth() /
+        player.GetMaxHealth();
+
+    DrawRectangle(
+        x,
+        y,
+        width,
+        height,
+        DARKGRAY
+    );
+
+    DrawRectangle(
+        x,
+        y,
+        static_cast<int>(
+            width * healthPercent
+            ),
+        height,
+        RED
+    );
+
+    DrawRectangleLines(
+        x,
+        y,
+        width,
+        height,
+        WHITE
+    );
+
+    DrawText(
+        TextFormat(
+            "HP %.0f / %.0f",
+            player.GetHealth(),
+            player.GetMaxHealth()
+        ),
+        x + 8,
+        y + 3,
+        16,
+        WHITE
+    );
+}
+
+void Renderer::DrawHUD(const Player& player, const GameWorld& world)
+{
+    DrawHealthBar(player);
+    DrawPowerupUI(world);
+}
+ 
+void Renderer::DrawGameOver()
+{
+    const int centerX = m_screenWidth / 2;
+    const int centerY = m_screenHeight / 2;
+
+    DrawRectangle(0, 0, m_screenWidth, m_screenHeight, Fade(BLACK, 0.5f));
+    const char* title = "GAME OVER";
+    const int titleWidth = MeasureText(title, 40); // Get the width of the text
+    DrawText(title, centerX - titleWidth / 2, centerY - 60, 50, RED);
+    const char* restartText = "Press R to Restart";
+    const int restartTextWidth = MeasureText(restartText, 20); // Get the width of the text
+    DrawText(restartText, centerX - restartTextWidth / 2, centerY + 10, 24, WHITE);
 }

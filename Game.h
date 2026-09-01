@@ -16,6 +16,13 @@
 
 #include "PowerupSystem.h"
 
+
+enum class GameState
+{
+    Playing,
+    GameOver
+};
+
 class Game
 {
 public:
@@ -35,6 +42,8 @@ private:
 
     //--------------Enemy Management----------------
     void CleanupEnemies(GameWorld& world);
+
+    void RestartGame();
 
 private:
     GameWorld m_world;
@@ -59,4 +68,7 @@ private:
 
     //--------------Projectile Management----------------
     float m_projectileSpeed = 400.0f; // Speed of the projectiles
+
+
+    GameState m_gameState = GameState::Playing;
 };

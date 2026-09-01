@@ -32,6 +32,8 @@ public:
     float GetMoveSpeed() const { return m_moveSpeed; }
     void SetMoveSpeed(float speed) { m_moveSpeed = speed; }
 
+    void Reset(); 
+
 private:
     void Move(float deltaTime, float speedMiltiplier);
     void UpdateCooldown(float deltaTime);

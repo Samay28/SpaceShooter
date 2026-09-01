@@ -43,6 +43,17 @@ void Game::Run()
 
 void Game::Update(float deltaTime)
 {   
+
+    //Game state check
+    if (m_gameState == GameState::GameOver)
+    {
+        if (IsKeyPressed(KEY_R))
+        {
+            RestartGame();
+        }
+        return;
+    }
+
     //---------------- Powerup System ----------------
     m_powerupSystem.Update(
         m_world,
@@ -131,6 +142,11 @@ void Game::Update(float deltaTime)
     m_collisionSystem.Update(
         m_world,m_player, m_enemyDatabase);
 
+    if(m_player.GetHealth() <= 0.0f)
+    {
+        m_gameState = GameState::GameOver;
+    }
+
     // ---------------- Cleanup ----------------
 
     CleanupProjectiles(m_world);
@@ -143,6 +159,11 @@ void Game::Render()
     m_renderer.BeginFrame(); // Start drawing
     m_player.Render(); // Render the player
     m_renderer.Render(m_world); // Render the projectiles
+    m_renderer.DrawHUD(m_player, m_world); // Render the HUD
+    if(m_gameState == GameState::GameOver)
+    {
+        m_renderer.DrawGameOver(); // Render the game over screen
+    }
     m_renderer.EndFrame(); // Finish drawing 
 }
 
@@ -192,35 +213,33 @@ void Game::CleanupEnemies(GameWorld& world)
     }
 }
 
-//void Game::HandlePlayerShooting()
-//{
-//    if(!m_player.IsShootPressed())
-//    {
-//        return;
-//    }
-//
-//    const Vector2 spawnPosition =
-//        m_player.GetProjectileSpawnPos();
-//
-//    const Vector2 velocity = {
-//        0.0f,
-//        -m_projectileSpeed
-//    };
-//
-//    // Create a new projectile entity
-//    Projectile projectile{};
-//    projectile.owner = ProjectileOwner::Player;
-//    projectile.damage = 50.0f; // Example damage value
-//    projectile.lifetime = 5.0f; // Example lifetime value
-//
-//    // Add the projectile to the world
-//    m_world.projectiles.push_back(projectile);
-//    m_world.projectilePositions.push_back(
-//        Position{ spawnPosition });
-//    m_world.projectileVelocities.push_back(
-//        Velocity{ velocity });
-//
-//    m_player.Fire();
-//}
+void Game::RestartGame()
+{
+    // Reset the game state
+    m_gameState = GameState::Playing;
+
+    //player reset and spawner
+    m_player.Reset();
+    m_spawnSystem.Reset();
+
+    // Clear runtime entities
+    m_world.enemies.clear();
+    m_world.enemyHealth.clear();
+    m_world.enemyPositions.clear();
+    m_world.enemyVelocities.clear();
+
+    m_world.projectiles.clear();
+    m_world.projectilePositions.clear();
+    m_world.projectileVelocities.clear();
+
+    m_world.powerups.clear();
+    m_world.powerupPositions.clear();
+
+    m_world.playerPowerups.clear();
+
+
+}
+
+
 
 

@@ -119,3 +119,9 @@ void SpawnSystem::SpawnPowerup(GameWorld& world)
     world.powerups.push_back(powerup);
     world.powerupPositions.push_back(position);
 }
+
+void SpawnSystem::Reset()
+{
+    m_spawnTimer = 1.0f;
+    m_powerupTimer = 5.0f;
+}

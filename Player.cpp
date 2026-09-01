@@ -37,6 +37,25 @@ void Player::Heal(float amount)
 }
 
 
+void Player::Reset()
+{
+    m_position = {
+        640.0f,
+        600.0f
+    };
+
+    m_velocity = {
+        0.0f,
+        0.0f
+    };
+
+    m_health =
+        m_maxHealth;
+
+    m_shootCooldown =
+        0.0f;
+}
+
 void Player::Move(float deltaTime, float speedMultiplier)
 {
     m_velocity = { 0.f,0.f };
