@@ -1,5 +1,5 @@
 [Basic]
-Health=50
+Health=30
 Speed=80
 Radius=15
 AttackDurationMin=1.5
@@ -7,7 +7,7 @@ AttackDurationMax=3.0
 Weapon=Single
 
 [Duo]
-Health=70
+Health=20
 Speed=60
 Radius=16
 AttackDurationMin=1.5
@@ -15,7 +15,7 @@ AttackDurationMax=3.0
 Weapon=Double
 
 [Fast]
-Health=40
+Health=20
 Speed=120
 Radius=12
 AttackDurationMin=1.0
@@ -23,7 +23,7 @@ AttackDurationMax=2.0
 Weapon=Fast
 
 [Tank]
-Health=250
+Health=60
 Speed=35
 Radius=20
 AttackDurationMin=2.0

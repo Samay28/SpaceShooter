@@ -24,6 +24,10 @@ void SpawnSystem::Update(GameWorld& world, const EnemyDatabase& enemyDatabase, f
 
 void SpawnSystem::SpawnEnemy(GameWorld& world, const EnemyDatabase& enemyDatabase)
 {   
+    if(world.enemies.size() >= m_maxEnemies)
+    {
+        return; // Don't spawn more enemies if we reached the max limit
+    }
     // Randomly select an enemy type
     const int typeIndex = GetRandomValue(0, static_cast<int>(EnemyType::Tank)); //Because Tank is the last enum value, we can use it to get the range of enemy types
     const EnemyType type = static_cast<EnemyType>(typeIndex);
