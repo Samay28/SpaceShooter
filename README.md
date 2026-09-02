@@ -44,7 +44,7 @@ The highest score is saved locally and displayed on the Game Over screen.
 
 ### Basic
 
-* Standard enemy
+* Standard enemy 
 * Normal movement speed
 * Normal health
 * Fires a single projectile
@@ -72,27 +72,27 @@ Enemy properties such as health, movement speed, weapon, attack duration, radius
 
 ## Powerups
 
-### Double Shot
+### Double Shot (Pink Color)
 
 Temporarily causes the player to fire **two projectiles**.
 
-### Triple Shot
+### Triple Shot (Purple Color)
 
 Temporarily causes the player to fire **three projectiles**.
 
-### Rapid Fire
+### Rapid Fire (Yellow Color)
 
 Temporarily increases the player's firing rate.
 
-### Speed Boost
+### Speed Boost (Orange Color)
 
 Temporarily increases player movement speed.
 
-### Shield
+### Shield (Skyblue Color)
 
 Temporarily protects the player from damage.
 
-### Heal
+### Heal (Green Color)
 
 Instantly restores a portion of player health.
 
