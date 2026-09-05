@@ -35,11 +35,15 @@ Game::Game()
 void Game::Run()
 {
     while (!m_renderer.ShouldClose())
-    {
+    {   
+        m_profiler.BeginFrame();
+
         const float deltaTime = GetFrameTime();
 
         Update(deltaTime);
         Render();
+
+        m_profiler.EndFrame();
     }
 }
 
@@ -48,6 +52,15 @@ void Game::Run()
 void Game::Update(float deltaTime)
 {   
 
+    if(IsKeyPressed(KEY_F3))
+    {
+        m_showProfiler = !m_showProfiler;
+    }
+
+
+
+    m_profiler.Begin("GameUpdate");
+
     //Game state check
     if (m_gameState == GameState::GameOver)
     {
@@ -55,6 +68,7 @@ void Game::Update(float deltaTime)
         {
             RestartGame();
         }
+        m_profiler.End("GameUpdate");
         return;
     }
 
@@ -63,18 +77,28 @@ void Game::Update(float deltaTime)
     if (m_gameTimer.IsFinished())
     {
         EndGame();
+
+        m_profiler.End("GameUpdate");
         return;
     }
 
+
     //---------------- Powerup System ----------------
+
+    m_profiler.Begin("Powerup");
+
     m_powerupSystem.Update(
         m_world,
         m_player,
         m_powerupDatabse,
         deltaTime);
 
+    m_profiler.End("Powerup");
 
     // ---------------- Player ----------------
+
+    m_profiler.Begin("Player");
+
     float speedMultiplier = 1.0f;
     for(const ActivePowerup& powerup : m_world.playerPowerups)
     {
@@ -113,20 +137,35 @@ void Game::Update(float deltaTime)
         );
     }
 
+    m_profiler.End("Player");
+
     // ---------------- Enemy Spawning ----------------
+
+    m_profiler.Begin("Spawn");
 
     m_spawnSystem.Update(
         m_world,
         m_enemyDatabase,
         deltaTime);
 
+    m_profiler.End("Spawn");
+
     // ---------------- Enemy AI ----------------
+
+    m_profiler.Begin("AI");
 
     m_aiSystem.Update(
         m_world,
         m_enemyDatabase,
         m_player.GetPosition(),
         deltaTime);
+
+    m_profiler.End("AI");
+
+
+    // ---------------- Weapon System ----------------
+
+    m_profiler.Begin("Weapon");
 
     m_weaponSystem.Update(
         m_world,
@@ -137,19 +176,31 @@ void Game::Update(float deltaTime)
         deltaTime
     );
 
+    m_profiler.End("Weapon");
+
     // ---------------- Movement ----------------
+
+    m_profiler.Begin("Movement");
 
     m_movementSystem.Update(
         m_world,
         deltaTime);
 
+    m_profiler.End("Movement");
+
     // ---------------- Projectiles ----------------
+
+    m_profiler.Begin("Projectile");
 
     m_projectileSystem.Update(
         m_world,
         deltaTime);
 
+    m_profiler.End("Projectile");
+
     // ---------------- Collision ----------------
+
+    m_profiler.Begin("Collision");
 
     m_collisionSystem.Update(
         m_world,m_player, m_enemyDatabase);
@@ -159,20 +210,34 @@ void Game::Update(float deltaTime)
         EndGame();
     }
 
+    m_profiler.End("Collision");
+
     //---------------- Score System ----------------
+
+    m_profiler.Begin("Score");
+
     m_scoreSystem.Update(
         m_world,
         deltaTime);
 
+    m_profiler.End("Score");
+
     // ---------------- Cleanup ----------------
 
-    CleanupProjectiles(m_world);
+    m_profiler.Begin("Cleanup");
 
+    CleanupProjectiles(m_world);
     CleanupEnemies(m_world);
+
+    m_profiler.End("Cleanup");
+
+    m_profiler.End("GameUpdate");
 }
 
 void Game::Render()
-{
+{   
+    m_profiler.Begin("Render");
+
     m_renderer.BeginFrame(); // Start drawing
     m_player.Render(); // Render the player
     m_renderer.Render(m_world); // Render the projectiles
@@ -181,7 +246,15 @@ void Game::Render()
     {
         m_renderer.DrawGameOver(m_world); // Render the game over screen
     }
+
+    if(m_showProfiler)
+    {
+        m_renderer.DrawProfiler(m_profiler); // Render the profiler
+    }
+
     m_renderer.EndFrame(); // Finish drawing 
+
+    m_profiler.End("Render");
 }
 
 void Game::CleanupProjectiles(GameWorld& world)

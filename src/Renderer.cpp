@@ -2,6 +2,7 @@
 #include "Core/GameWorld.h"
 #include "Player.h"
 #include "raylib.h"
+#include "Debug/Profiler.h"
 
 Renderer::Renderer(
     int screenWidth,
@@ -43,6 +44,7 @@ bool Renderer::ShouldClose() const
 
 void Renderer::Render(const GameWorld& world)
 {   
+
     // Render player projectiles
     for (size_t i = 0; i < world.projectiles.size(); ++i)
     {   
@@ -83,7 +85,7 @@ void Renderer::Render(const GameWorld& world)
         switch (world.powerups[i].type)
         {
         case PowerupType::DoubleShot:
-            color = BLUE;
+            color = PINK;
             break;
 
         case PowerupType::TripleShot:
@@ -281,4 +283,195 @@ void Renderer::DrawGameOver(const GameWorld& world)
     const char* restartText = "Press R to Restart";
     const int restartTextWidth = MeasureText(restartText, 24); // Get the width of the text
     DrawText(restartText, centerX - restartTextWidth / 2, centerY + 80, 24, WHITE);
+}
+
+void Renderer::DrawProfiler(const Profiler& profiler)
+{
+    // Draw the profiler information on the screen
+    constexpr int panelWidth = 350;
+    constexpr int panelHeight = 405;
+
+    constexpr int margin = 20;
+    const int panelX = m_screenWidth - panelWidth - margin;
+    const int panelY = m_screenHeight - panelHeight - margin;
+
+    //background panel
+    DrawRectangle(panelX, panelY, panelWidth, panelHeight, Fade(BLACK, 0.80f));
+    //Draw Border
+    DrawRectangleLines(panelX, panelY, panelWidth, panelHeight, WHITE);
+
+    //Title
+    DrawText("Profiler", panelX + 15, panelY + 12, 24, SKYBLUE);
+    DrawText("F3: Toggle", panelX + panelWidth - 105, panelY + 16, 16, LIGHTGRAY);
+
+    int y = panelY + 52;
+
+    DrawText(
+        "FRAME",
+        panelX + 15,
+        y,
+        16,
+        LIGHTGRAY
+    );
+
+    y += 23;
+
+    DrawText(
+        TextFormat(
+            "Frame Time     %.2f ms",
+            profiler.GetFrameTime()
+        ),
+        panelX + 15,
+        y,
+        18,
+        WHITE
+    );
+
+    y += 25;
+
+    DrawText(
+        TextFormat(
+            "Game Update    %.2f ms",
+            profiler.GetCurrentTime("GameUpdate")
+        ),
+        panelX + 15,
+        y,
+        18,
+        WHITE
+    );
+
+    y += 25;
+
+    DrawText(
+        TextFormat(
+            "Rendering      %.2f ms",
+            profiler.GetCurrentTime("Render")
+        ),
+        panelX + 15,
+        y,
+        18,
+        WHITE
+    );
+
+    // -------------------------
+    // Systems
+    // -------------------------
+
+    y += 32;
+
+    DrawText(
+        "SYSTEM",
+        panelX + 15,
+        y,
+        16,
+        LIGHTGRAY
+    );
+
+    DrawText(
+        "CURRENT",
+        panelX + 140,
+        y,
+        16,
+        LIGHTGRAY
+    );
+
+    DrawText(
+        "AVG",
+        panelX + 225,
+        y,
+        16,
+        LIGHTGRAY
+    );
+
+    DrawText(
+        "MAX",
+        panelX + 280,
+        y,
+        16,
+        LIGHTGRAY
+    );
+
+    y += 24;
+
+    constexpr int rowHeight = 25;
+
+    const char* systemNames[] =
+    {
+        "Spawn",
+        "AI",
+        "Weapon",
+        "Movement",
+        "Projectile",
+        "Collision",
+        "Powerup",
+        "Score",
+        "Cleanup"
+    };
+
+    for (const char* systemName : systemNames)
+    {
+        DrawText(
+            systemName,
+            panelX + 15,
+            y,
+            18,
+            WHITE
+        );
+
+        DrawText(
+            TextFormat(
+                "%.4f",
+                profiler.GetCurrentTime(systemName)
+            ),
+            panelX + 140,
+            y,
+            18,
+            WHITE
+        );
+
+        DrawText(
+            TextFormat(
+                "%.4f",
+                profiler.GetAverageTime(systemName)
+            ),
+            panelX + 225,
+            y,
+            18,
+            WHITE
+        );
+
+        DrawText(
+            TextFormat(
+                "%.4f",
+                profiler.GetMaxTime(systemName)
+            ),
+            panelX + 280,
+            y,
+            18,
+            WHITE
+        );
+
+        y += rowHeight;
+    }
+
+    // -------------------------
+    // Frame Budget
+    // -------------------------
+
+    y += 5;
+
+    const float frameBudget = 16.67f;
+    const float frameTime = profiler.GetFrameTime();
+
+    DrawText(
+        TextFormat(
+            "60 FPS Budget: %.2f / %.2f ms",
+            frameTime,
+            frameBudget
+        ),
+        panelX + 15,
+        y,
+        17,
+        frameTime > frameBudget ? RED : GREEN
+    );
 }

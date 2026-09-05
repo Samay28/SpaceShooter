@@ -158,6 +158,7 @@
     <ClInclude Include="src\Data\PowerupDatabase.h" />
     <ClInclude Include="src\Data\WeaponDatabase.h" />
     <ClInclude Include="src\Data\WeaponDefinition.h" />
+    <ClInclude Include="src\Debug\Profiler.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Renderer.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="src\Data\EnemyDatabase.cpp" />
     <ClCompile Include="src\Data\PowerupDatabase.cpp" />
     <ClCompile Include="src\Data\WeaponDatabase.cpp" />
+    <ClCompile Include="src\Debug\Profiler.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player.cpp" />

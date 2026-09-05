@@ -68,7 +68,7 @@ float Profiler::GetAverageTime(const std::string& name) const
     const auto it = m_entries.find(name);
     if(it != m_entries.end())
     {
-        it->second.averageMiliseconds;
+        return it->second.averageMiliseconds;
     }
     return 0.0f;
 }
@@ -78,7 +78,7 @@ float Profiler::GetMaxTime(const std::string& name) const
     const auto it = m_entries.find(name);
     if (it != m_entries.end())
     {
-        it->second.maxMiliseconds;
+        return it->second.maxMiliseconds;
     }
     return 0.0f;
 }

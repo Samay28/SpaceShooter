@@ -20,6 +20,7 @@
 #include "Systems/ScoreSystem.h"
 
 
+#include "Debug/Profiler.h"
 
 enum class GameState
 {
@@ -70,6 +71,8 @@ private:
     PowerupSystem m_powerupSystem;
     PowerupDatabase m_powerupDatabse;
 
+    Profiler m_profiler;
+    bool m_showProfiler = false;
 
     //--------------Projectile Management----------------
     float m_projectileSpeed = 400.0f; // Speed of the projectiles

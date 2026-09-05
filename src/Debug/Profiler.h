@@ -49,4 +49,7 @@ private:
 private:
     TimePoint m_frameStart{};
     float m_frameTime = 0.f;
+
+    //map to store profiling entries with their names as keys
+    std::unordered_map<std::string, ProfileEntry> m_entries;
 };
