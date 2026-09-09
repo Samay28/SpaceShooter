@@ -25,6 +25,7 @@
 enum class GameState
 {
     Playing,
+    Paused,
     GameOver
 };
 
@@ -37,11 +38,10 @@ public:
 
 
 private:
-    void Update(float deltaTime);
+    void UpdateSimulation(float fixedDeltaTime);
     void Render();
 
     //--------------Projectile Management----------------
-    /*void HandlePlayerShooting();*/
     void CleanupProjectiles(GameWorld& world); // Remove dead projectiles from the vector
 
 
@@ -50,6 +50,7 @@ private:
 
     void RestartGame();
     void EndGame();
+    void PauseGame();
 
 private:
     GameWorld m_world;
@@ -83,4 +84,12 @@ private:
 
     GameTimer m_gameTimer{ 150.f };
     ScoreSystem m_scoreSystem;
+
+    //simualtion timing, to make sure the game runs at a fixed time step for physics and logic updates
+    static constexpr float FixedDeltaTime = 1.f / 60.f; // Fixed time step for simulation
+    float m_accumulator = 0.f; // Accumulator for fixed time step
+    static constexpr int MaxSimSteps = 5; // Maximum number of simulation steps per frame, incase the game lags, to prevent spiral of death
+    int m_simulationStepsThisFrame = 0; // Count the number of simulation steps taken in this frame
+
+
 };

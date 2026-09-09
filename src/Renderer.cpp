@@ -285,11 +285,11 @@ void Renderer::DrawGameOver(const GameWorld& world)
     DrawText(restartText, centerX - restartTextWidth / 2, centerY + 80, 24, WHITE);
 }
 
-void Renderer::DrawProfiler(const Profiler& profiler)
+void Renderer::DrawProfiler(const Profiler& profiler, float fixedDeltaTime, int simulationSteps)
 {
     // Draw the profiler information on the screen
     constexpr int panelWidth = 350;
-    constexpr int panelHeight = 405;
+    constexpr int panelHeight = 455;
 
     constexpr int margin = 20;
     const int panelX = m_screenWidth - panelWidth - margin;
@@ -331,8 +331,8 @@ void Renderer::DrawProfiler(const Profiler& profiler)
 
     DrawText(
         TextFormat(
-            "Game Update    %.2f ms",
-            profiler.GetCurrentTime("GameUpdate")
+            "Simulation     %.2f ms",
+            profiler.GetCurrentTime("Simulation")
         ),
         panelX + 15,
         y,
@@ -346,6 +346,32 @@ void Renderer::DrawProfiler(const Profiler& profiler)
         TextFormat(
             "Rendering      %.2f ms",
             profiler.GetCurrentTime("Render")
+        ),
+        panelX + 15,
+        y,
+        18,
+        WHITE
+    );
+
+    y += 25;
+
+    DrawText(
+        TextFormat(
+            "Fixed DT       %.2f ms",
+            fixedDeltaTime * 1000.0f
+        ),
+        panelX + 15,
+        y,
+        18,
+        WHITE
+    );
+
+    y += 25;
+
+    DrawText(
+        TextFormat(
+            "Sim Steps      %d",
+            simulationSteps
         ),
         panelX + 15,
         y,

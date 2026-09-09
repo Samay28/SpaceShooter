@@ -30,6 +30,7 @@ Game::Game()
         );
     }
     m_scoreSystem.LoadHighscore(m_world);
+    SetTargetFPS(144);
 }
 
 void Game::Run()
@@ -38,9 +39,53 @@ void Game::Run()
     {   
         m_profiler.BeginFrame();
 
-        const float deltaTime = GetFrameTime();
+        //--------------------------Spiral of Death-----------------------------
+        // The game tries to simulate time that has already passed by running multiple physics 
+        // or update steps
 
-        Update(deltaTime);
+
+        // moved out of the updatesim, as it will not open when target fps is 30, simulation step will be called twice
+        // making toggle the profiler on and off in one frame, so it will never be visible
+        if (IsKeyPressed(KEY_F3))
+        {
+            m_showProfiler = !m_showProfiler;
+        }
+
+        if(IsKeyDown(KEY_P))
+        {
+            PauseGame();
+        }
+
+        // Limit frame time to avoid spiral of death
+        const float rawFrameTime = GetFrameTime();
+
+        if (rawFrameTime > 0.25f)
+        {
+            m_accumulator = 0.0f;
+        }
+
+        const float frameTime = std::min(rawFrameTime, 0.25f);
+
+        m_accumulator += frameTime; //accumulate the time since the last update
+        m_simulationStepsThisFrame = 0; // Count the number of simulation steps taken in this frame
+        // Fixed time step loop to ensure consistent physics and game logic updates
+
+        if (m_gameState == GameState::Playing)
+        {
+            while (m_accumulator >= FixedDeltaTime && m_simulationStepsThisFrame < MaxSimSteps)
+            {
+                UpdateSimulation(FixedDeltaTime);
+                m_accumulator -= FixedDeltaTime; //decrease the accumulator by the fixed time step
+                ++m_simulationStepsThisFrame; // Increment the simulation step counter
+            }
+        }
+        else
+        {
+            //prevent accumulated real time from being simulated
+            //when the game resumes
+            m_accumulator = 0.0f;
+        }
+
         Render();
 
         m_profiler.EndFrame();
@@ -49,31 +94,27 @@ void Game::Run()
 
 
 
-void Game::Update(float deltaTime)
+void Game::UpdateSimulation(float fixedDeltaTime)
 {   
 
-    if(IsKeyPressed(KEY_F3))
-    {
-        m_showProfiler = !m_showProfiler;
-    }
 
 
 
-    m_profiler.Begin("GameUpdate");
+    m_profiler.Begin("Simulation");
 
     //Game state check
-    if (m_gameState == GameState::GameOver)
+    if (m_gameState == GameState::GameOver || m_gameState == GameState::Paused)
     {
         if (IsKeyPressed(KEY_R))
         {
             RestartGame();
         }
-        m_profiler.End("GameUpdate");
+        m_profiler.End("Simulation");
         return;
     }
 
     //----------------- Timer ----------------
-    m_gameTimer.Update(deltaTime);
+    m_gameTimer.Update(fixedDeltaTime);
     if (m_gameTimer.IsFinished())
     {
         EndGame();
@@ -91,7 +132,7 @@ void Game::Update(float deltaTime)
         m_world,
         m_player,
         m_powerupDatabse,
-        deltaTime);
+        fixedDeltaTime);
 
     m_profiler.End("Powerup");
 
@@ -108,7 +149,7 @@ void Game::Update(float deltaTime)
         }
     }
 
-    m_player.Update(deltaTime, speedMultiplier);
+    m_player.Update(fixedDeltaTime, speedMultiplier);
     
     //  we need to check if the rapid fire powerup is active and set the shoot interval accordingly
     bool rapidFireActive = false;
@@ -146,7 +187,7 @@ void Game::Update(float deltaTime)
     m_spawnSystem.Update(
         m_world,
         m_enemyDatabase,
-        deltaTime);
+        fixedDeltaTime);
 
     m_profiler.End("Spawn");
 
@@ -158,7 +199,7 @@ void Game::Update(float deltaTime)
         m_world,
         m_enemyDatabase,
         m_player.GetPosition(),
-        deltaTime);
+        fixedDeltaTime);
 
     m_profiler.End("AI");
 
@@ -173,7 +214,7 @@ void Game::Update(float deltaTime)
         m_enemyDatabase,
         m_weaponDatabase,
         m_player.GetPosition(),
-        deltaTime
+        fixedDeltaTime
     );
 
     m_profiler.End("Weapon");
@@ -184,7 +225,7 @@ void Game::Update(float deltaTime)
 
     m_movementSystem.Update(
         m_world,
-        deltaTime);
+        fixedDeltaTime);
 
     m_profiler.End("Movement");
 
@@ -194,7 +235,7 @@ void Game::Update(float deltaTime)
 
     m_projectileSystem.Update(
         m_world,
-        deltaTime);
+        fixedDeltaTime);
 
     m_profiler.End("Projectile");
 
@@ -218,7 +259,7 @@ void Game::Update(float deltaTime)
 
     m_scoreSystem.Update(
         m_world,
-        deltaTime);
+        fixedDeltaTime);
 
     m_profiler.End("Score");
 
@@ -231,7 +272,7 @@ void Game::Update(float deltaTime)
 
     m_profiler.End("Cleanup");
 
-    m_profiler.End("GameUpdate");
+    m_profiler.End("Simulation");
 }
 
 void Game::Render()
@@ -249,7 +290,7 @@ void Game::Render()
 
     if(m_showProfiler)
     {
-        m_renderer.DrawProfiler(m_profiler); // Render the profiler
+        m_renderer.DrawProfiler(m_profiler, FixedDeltaTime, m_simulationStepsThisFrame); // Render the profiler
     }
 
     m_renderer.EndFrame(); // Finish drawing 
@@ -377,6 +418,23 @@ void Game::EndGame()
         m_world.highScore = m_world.score;
         m_scoreSystem.SaveHighscore(m_world);
     }
+}
+
+void Game::PauseGame()
+{
+    //for now just pause the game, but we can add a pause menu later
+
+    // Toggle the game state between Playing and Paused
+    if (m_gameState == GameState::Playing)
+    {
+        m_gameState = GameState::Paused;
+    }
+    else if (m_gameState == GameState::Paused)
+    {
+        m_gameState = GameState::Playing;
+    }
+
+
 }
 
 

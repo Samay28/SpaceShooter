@@ -23,7 +23,7 @@ public:
     void DrawHealthBar(const Player& player);
     void DrawGameOver(const GameWorld& world);
 
-    void DrawProfiler(const Profiler& profiler);
+    void DrawProfiler(const Profiler& profiler, float fixedDeltaTime, int simulationSteps);
 
 private:
     int m_screenWidth;
