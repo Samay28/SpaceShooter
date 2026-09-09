@@ -51,7 +51,7 @@ void Game::Run()
             m_showProfiler = !m_showProfiler;
         }
 
-        if(IsKeyDown(KEY_P))
+        if(IsKeyPressed(KEY_P))
         {
             PauseGame();
         }
@@ -103,7 +103,7 @@ void Game::UpdateSimulation(float fixedDeltaTime)
     m_profiler.Begin("Simulation");
 
     //Game state check
-    if (m_gameState == GameState::GameOver || m_gameState == GameState::Paused)
+    if (m_gameState == GameState::GameOver)
     {
         if (IsKeyPressed(KEY_R))
         {
