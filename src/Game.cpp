@@ -84,8 +84,8 @@ void Game::Run()
             //prevent accumulated real time from being simulated
             //when the game resumes
             m_accumulator = 0.0f;
+            m_simulationStepsThisFrame = 0; // Reset the simulation step counter when the game is paused or over
         }
-
         Render();
 
         m_profiler.EndFrame();

@@ -19,6 +19,7 @@
 #include "Core/GameTimer.h"
 #include "Systems/ScoreSystem.h"
 
+#include "Spatial/SpatialGrid.h"
 
 #include "Debug/Profiler.h"
 
@@ -51,6 +52,8 @@ private:
     void RestartGame();
     void EndGame();
     void PauseGame();
+
+    SpatialGrid m_spatialGrid{ 1200, 720, 100.0f }; // Create a spatial grid with world size and cell size
 
 private:
     GameWorld m_world;
