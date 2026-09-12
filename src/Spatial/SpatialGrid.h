@@ -1,8 +1,8 @@
 #pragma once
 #include "raylib.h"
-
 #include <cstddef>
 #include <vector>
+#include <Components/Position.h>
 
 class SpatialGrid
 {
@@ -25,6 +25,16 @@ public:
 
     //returns the projectile indices contaid in the cell at the given position
     std::vector<size_t>QueryProjectiles(Vector2 position) const;
+
+    // Returns enemy indices contained in all grid cells
+    // touched by the query radius
+    // This prevents collisions from being missed when
+    // a projectile and enemy are in neighboring cells.
+    std::vector<size_t>QueryEnemiesInRadius(Vector2 position, float radius) const;
+
+    //rebuilds he enemy portion of the grid 
+    //from the current enemy dense enemy pos array
+    void BuildEnemyGrid(const std::vector<Position>& enemyPositions);
 
     //world pos into grid cell index
     size_t GetCellIndex(Vector2 position) const;

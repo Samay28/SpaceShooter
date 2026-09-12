@@ -2,6 +2,12 @@
 #include <algorithm>
 #include <cmath>
 
+template <typename T>
+constexpr const T& Clamp(const T& value, const T& min, const T& max) {
+    return (value < min) ? min : (value > max) ? max : value;
+}
+
+
 SpatialGrid::SpatialGrid(int worldWidth, int worldHeight, float cellSize)
     : m_worldWidth(worldWidth), m_worldHeight(worldHeight), m_cellSize(cellSize)
     , m_columns(static_cast<int>(std::ceil(worldWidth / cellSize))) //columns = worldWidth / cellSize
@@ -53,6 +59,49 @@ std::vector<size_t> SpatialGrid::QueryProjectiles(Vector2 position) const
 {
     const size_t cellIndex = GetCellIndex(position);    
     return m_projectileCells[cellIndex]; //returns the copy of the vector of projectile indices in the cell
+}
+
+std::vector<size_t> SpatialGrid::QueryEnemiesInRadius(Vector2 position, float radius) const
+{
+    //convert query area into grid cell coordinates
+    const int minCol = Clamp(static_cast<int>(std::floor((position.x - radius) / m_cellSize)), 0, m_columns - 1);
+    const int maxCol = Clamp(static_cast<int>(std::floor((position.x + radius) / m_cellSize)), 0, m_columns - 1);
+    const int minRow = Clamp(static_cast<int>(std::floor((position.y - radius) / m_cellSize)), 0, m_rows - 1);
+    const int maxRow = Clamp(static_cast<int>(std::floor((position.y + radius) / m_cellSize)), 0, m_rows - 1);
+
+    std::vector<size_t> candidates;
+
+    //collect enemies from every cell touched by the query area
+
+    for (int row = minRow; row <= maxRow; ++row)
+    {
+        for (int col = minCol; col <= maxCol; ++col)
+        {
+            const size_t cellIndex = ToCellIndex(col, row);
+
+            //get reference to the vector of enemy indices in the cell, to avoid copying it
+            const std::vector<size_t>& cell = m_enemyCells[cellIndex];
+
+            candidates.insert(candidates.end(), cell.begin(), cell.end()); //append the indices to the candidates vector
+        }
+    }
+    return candidates; //return the collected enemy indices
+}
+
+void SpatialGrid::BuildEnemyGrid(const std::vector<Position>& enemyPositions)
+{
+    //clear the grid first
+    for (std::vector<size_t>& cell : m_enemyCells)
+    {
+        cell.clear();
+    }
+
+    //reinsert all enemies into the grid based on their current positions
+    for (size_t i = 0; i < enemyPositions.size(); ++i)
+    {
+        const Vector2 pos = enemyPositions[i].value;
+        InsertEnemy(pos, i);
+    }
 }
 
 size_t SpatialGrid::GetCellIndex(Vector2 position) const

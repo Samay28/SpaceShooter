@@ -1,7 +1,8 @@
 #include "CollisionSystem.h"
+#include "Spatial/SpatialGrid.h"
 #include "raymath.h"
 
-void CollisionSystem::Update(GameWorld& world, Player& player, const EnemyDatabase& enemyDatabase)
+void CollisionSystem::Update(GameWorld& world, Player& player, const EnemyDatabase& enemyDatabase, const SpatialGrid& spatialGrid)
 {
     // Check for collisions between projectiles and enemies
 
@@ -12,8 +13,13 @@ void CollisionSystem::Update(GameWorld& world, Player& player, const EnemyDataba
 
         //-------------------- Player Projectile vs Enemy Collision --------------------
         if (projectile.owner == ProjectileOwner::Player)
-        {
-            for (size_t i = 0; i < world.enemies.size(); ++i)
+        {   
+            //ask the grid for only enemies near the projectile, to reduce the number of checks needed
+            const std::vector<size_t> candidates = spatialGrid.QueryEnemiesInRadius(projectilePostion, 4.f);
+
+            //now perform collision checks only on the candidates returned by the spatial grid
+            //instead of for (size_t i = 0; i < world.enemies.size(); ++i)
+            for(const size_t i : candidates)
             {
                 const Enemy& enemy = world.enemies[i];
                 const Vector2 enemyPosition = world.enemyPositions[i].value;

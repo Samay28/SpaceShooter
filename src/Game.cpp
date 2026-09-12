@@ -55,6 +55,10 @@ void Game::Run()
         {
             PauseGame();
         }
+        if(IsKeyPressed(KEY_R) && m_gameState == GameState::GameOver)
+        {
+            RestartGame();
+        }
 
         // Limit frame time to avoid spiral of death
         const float rawFrameTime = GetFrameTime();
@@ -105,10 +109,6 @@ void Game::UpdateSimulation(float fixedDeltaTime)
     //Game state check
     if (m_gameState == GameState::GameOver)
     {
-        if (IsKeyPressed(KEY_R))
-        {
-            RestartGame();
-        }
         m_profiler.End("Simulation");
         return;
     }
@@ -239,12 +239,17 @@ void Game::UpdateSimulation(float fixedDeltaTime)
 
     m_profiler.End("Projectile");
 
+    //---------------- Spatial Grid ----------------
+
+    //build the broad phase structure using the latest positions of the enemies
+    m_spatialGrid.BuildEnemyGrid(m_world.enemyPositions);
+
     // ---------------- Collision ----------------
 
     m_profiler.Begin("Collision");
 
     m_collisionSystem.Update(
-        m_world,m_player, m_enemyDatabase);
+        m_world,m_player, m_enemyDatabase, m_spatialGrid);
 
     if(m_player.GetHealth() <= 0.0f)
     {

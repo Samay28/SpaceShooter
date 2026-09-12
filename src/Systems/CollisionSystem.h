@@ -8,7 +8,7 @@
 class CollisionSystem
 {
 public:
-    void Update(GameWorld& world, Player& player, const EnemyDatabase& enemyDatabase);
+    void Update(GameWorld& world, Player& player, const EnemyDatabase& enemyDatabase, const class SpatialGrid& spatialGrid);
 
     //helpers
     bool HasShield(const GameWorld& world) const;
