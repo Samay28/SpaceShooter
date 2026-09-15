@@ -95,4 +95,8 @@ private:
     int m_simulationStepsThisFrame = 0; // Count the number of simulation steps taken in this frame
 
 
+    Sound startGameSound;
+    Sound gameOverSound;
+    Music bgMusic;
+
 };

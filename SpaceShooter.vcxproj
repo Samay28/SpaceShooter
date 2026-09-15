@@ -159,6 +159,9 @@
     <ClInclude Include="src\Data\WeaponDatabase.h" />
     <ClInclude Include="src\Data\WeaponDefinition.h" />
     <ClInclude Include="src\Debug\Profiler.h" />
+    <ClInclude Include="src\Events\Event.h" />
+    <ClInclude Include="src\Events\EventBus.h" />
+    <ClInclude Include="src\Events\GameplayEvents.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Renderer.h" />

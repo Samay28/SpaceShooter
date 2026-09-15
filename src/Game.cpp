@@ -6,7 +6,8 @@ Game::Game()
     , m_player({ 640.0f, 600.0f })
     , m_projectileSpeed(500.0f)
     , m_gameTimer(150.f)
-{
+{   
+
     if (!m_enemyDatabase.Load("assets/enemies.txt"))
     {
         TraceLog(
@@ -31,6 +32,11 @@ Game::Game()
     }
     m_scoreSystem.LoadHighscore(m_world);
     SetTargetFPS(144);
+    startGameSound = LoadSound("assets/sounds/start_game.wav");
+    bgMusic = LoadMusicStream("assets/sounds/bg_music.wav");
+    gameOverSound = LoadSound("assets/sounds/game_over.wav");
+    PlaySound(startGameSound);
+    PlayMusicStream(bgMusic);
 }
 
 void Game::Run()
@@ -38,7 +44,6 @@ void Game::Run()
     while (!m_renderer.ShouldClose())
     {   
         m_profiler.BeginFrame();
-
         //--------------------------Spiral of Death-----------------------------
         // The game tries to simulate time that has already passed by running multiple physics 
         // or update steps
@@ -77,10 +82,12 @@ void Game::Run()
         if (m_gameState == GameState::Playing)
         {
             while (m_accumulator >= FixedDeltaTime && m_simulationStepsThisFrame < MaxSimSteps)
-            {
+            {   
                 UpdateSimulation(FixedDeltaTime);
                 m_accumulator -= FixedDeltaTime; //decrease the accumulator by the fixed time step
                 ++m_simulationStepsThisFrame; // Increment the simulation step counter
+
+                
             }
         }
         else
@@ -112,7 +119,7 @@ void Game::UpdateSimulation(float fixedDeltaTime)
         m_profiler.End("Simulation");
         return;
     }
-
+    UpdateMusicStream(bgMusic);
     //----------------- Timer ----------------
     m_gameTimer.Update(fixedDeltaTime);
     if (m_gameTimer.IsFinished())
@@ -406,12 +413,15 @@ void Game::RestartGame()
     m_world.playerPowerups.clear();
 
     m_spawnSystem.Reset();
+
+    PlaySound(startGameSound);
+    PlayMusicStream(bgMusic);
 }
 
 void Game::EndGame()
 {
     m_gameState = GameState::GameOver;
-
+    PlaySound(gameOverSound);
     while (!m_world.scorePopup.empty())
     {
         m_world.score += m_world.scorePopup.back().score;

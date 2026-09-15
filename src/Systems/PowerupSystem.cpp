@@ -1,6 +1,12 @@
 #include "PowerupSystem.h"
 #include "Player.h"
 #include "raymath.h"
+#include "raylib.h"
+
+PowerupSystem::PowerupSystem()
+{
+    powerupPickupSound = LoadSound("assets/sounds/pickup.wav");
+}
 
 void PowerupSystem::Update(GameWorld& world, Player& player, const PowerupDatabase& database, float deltaTime)
 {
@@ -49,6 +55,7 @@ void PowerupSystem::CheckPickups(GameWorld& world, Player& player, const Powerup
 
             world.powerups.erase(world.powerups.begin() + i);
             world.powerupPositions.erase(world.powerupPositions.begin() + i);
+            PlaySound(powerupPickupSound);
         }
         else
         {

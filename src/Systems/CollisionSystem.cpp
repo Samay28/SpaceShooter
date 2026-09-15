@@ -1,6 +1,21 @@
 #include "CollisionSystem.h"
-#include "Spatial/SpatialGrid.h"
+#include "Spatial/SpatialGrid.h"    
 #include "raymath.h"
+#include "raylib.h"
+
+CollisionSystem::CollisionSystem()
+{   
+    playerHitSound = LoadSound("assets/sounds/player_hit.wav");
+    shieldBreakSound = LoadSound("assets/sounds/shield_break.wav");
+}
+
+CollisionSystem::~CollisionSystem()
+{
+    // Unload the sound effect when the collision system is destroyed
+    //it is important to unload the sound effect to free up memory and resources used by the sound system
+    UnloadSound(playerHitSound);
+    UnloadSound(shieldBreakSound);
+}
 
 void CollisionSystem::Update(GameWorld& world, Player& player, const EnemyDatabase& enemyDatabase, const SpatialGrid& spatialGrid)
 {
@@ -33,6 +48,7 @@ void CollisionSystem::Update(GameWorld& world, Player& player, const EnemyDataba
                     world.enemyHealth[i].currentHealth -= projectile.damage;
                     // Mark the projectile for removal by setting its lifetime to 0
                     world.projectiles[projectileIndex].lifetime = 0.0f;
+                    PlaySound(playerHitSound);
 
                     break; // Exit the loop since the projectile can only hit one enemy
                 }
@@ -52,10 +68,12 @@ void CollisionSystem::Update(GameWorld& world, Player& player, const EnemyDataba
                 if(HasShield(world))
                 {
                     RemoveShield(world);
+                    PlaySound(shieldBreakSound);
                 }
                 else
                 {
                     player.TakeDamage(projectile.damage);
+                    PlaySound(playerHitSound);
                 }
                 // Mark the projectile for removal by setting its lifetime to 0
                 world.projectiles[projectileIndex].lifetime = 0.0f;
@@ -83,6 +101,7 @@ void CollisionSystem::RemoveShield(GameWorld& world)
         if(world.playerPowerups[i].type == PowerupType::Shield)
         {
             world.playerPowerups.erase(world.playerPowerups.begin() + i);
+            //play audio
             return;
         }
     }
