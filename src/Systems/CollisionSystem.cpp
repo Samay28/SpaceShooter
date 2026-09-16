@@ -61,7 +61,7 @@ void CollisionSystem::Update(GameWorld& world, Player& player, const EnemyDataba
             const Vector2 playerPosition = player.GetPosition();
             const float distance = Vector2Distance(projectilePostion, playerPosition);
 
-            if(distance <= 15.f)
+            if(distance <= 19.f)
             {
                 // Collision detected, apply damage to the player
                 //but only if the player doesn't have a shield

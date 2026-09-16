@@ -50,5 +50,7 @@ private:
 
     float m_health;
     float m_maxHealth;
+
+    Texture2D m_playerTexture;
 };
 

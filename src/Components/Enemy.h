@@ -21,7 +21,7 @@ struct Enemy
 
     Vector2 targetPosition;
 
-    
+    float rotation = 0.f; // Angle in degrees for sprite rotation
     float weaponCooldown;
 };
 

@@ -10,8 +10,9 @@ Player::Player(Vector3 startPos)
     , m_health{ 100.0f }
     , m_maxHealth{ 100.0f }
 {
+    m_playerTexture = LoadTexture("assets/player/player.png");
 }
-
+    
 void Player::Update(float deltaTime, float speedMultiplier)
 {
     Move(deltaTime, speedMultiplier);
@@ -135,19 +136,11 @@ Vector2 Player::GetProjectileSpawnPos() const
 
 void Player::Render() const
 {
-    DrawTriangle(
-        {
-            m_position.x,
-            m_position.y - 15.0f
-        },
-        {
-            m_position.x - 12.0f,
-            m_position.y + 12.0f
-        },
-        {
-            m_position.x + 12.0f,
-            m_position.y + 12.0f
-        },
-        SKYBLUE
+   // Draw the player texture at the player's position, centered
+    DrawTexture(
+        m_playerTexture,
+        static_cast<int>(m_position.x - m_playerTexture.width / 2),
+        static_cast<int>(m_position.y - m_playerTexture.height / 2),
+        WHITE
     );
 }

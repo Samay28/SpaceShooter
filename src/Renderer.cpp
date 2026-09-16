@@ -1,7 +1,6 @@
 #include "Renderer.h"
 #include "Core/GameWorld.h"
 #include "Player.h"
-#include "raylib.h"
 #include "Debug/Profiler.h"
 
 Renderer::Renderer(
@@ -18,11 +17,51 @@ Renderer::Renderer(
     );
 
     SetTargetFPS(60);
+    m_basicEnemyTexture =
+        LoadTexture("assets/enemies/basic.png");
+
+    m_duoEnemyTexture =
+        LoadTexture("assets/enemies/duo.png");
+
+    m_fastEnemyTexture =
+        LoadTexture("assets/enemies/fast.png");
+
+    m_tankEnemyTexture =
+        LoadTexture("assets/enemies/tank.png");
+
+    m_doubleShotTexture =
+        LoadTexture("assets/powerups/doubleshot.png");
+
+    m_tripleShotTexture = 
+        LoadTexture("assets/powerups/tripleshot.png");
+
+    m_rapidFireTexture = 
+        LoadTexture("assets/powerups/rapidfire.png");
+
+    m_speedBoostTexture =
+        LoadTexture("assets/powerups/speedboost.png");
+
+    m_shieldTexture =
+        LoadTexture("assets/powerups/shield.png");
+
+    m_healthPackTexture =
+        LoadTexture("assets/powerups/heal.png");
+
 }
 
 Renderer::~Renderer()
 {
     CloseWindow();
+    UnloadTexture(m_basicEnemyTexture);
+    UnloadTexture(m_duoEnemyTexture);
+    UnloadTexture(m_fastEnemyTexture);
+    UnloadTexture(m_tankEnemyTexture);
+    UnloadTexture(m_doubleShotTexture);
+    UnloadTexture(m_tripleShotTexture);
+    UnloadTexture(m_rapidFireTexture);
+    UnloadTexture(m_speedBoostTexture);
+    UnloadTexture(m_shieldTexture);
+    UnloadTexture(m_healthPackTexture);
 }
 
 void Renderer::BeginFrame()
@@ -68,12 +107,67 @@ void Renderer::Render(const GameWorld& world)
     }
 
     // Render enemies
-    for(size_t i=0; i<world.enemies.size(); ++i)
+    for (size_t i = 0; i < world.enemies.size(); ++i)
     {
-        DrawCircleV(
-            world.enemyPositions[i].value,
-            15.f,
-            RED);
+        const Enemy& enemy =
+            world.enemies[i];
+
+        const Vector2 position =
+            world.enemyPositions[i].value;
+
+        Texture2D texture{};
+
+        switch (enemy.type)
+        {
+        case EnemyType::Basic:
+            texture = m_basicEnemyTexture;
+            break;
+
+        case EnemyType::Duo:
+            texture = m_duoEnemyTexture;
+            break;
+
+        case EnemyType::Fast:
+            texture = m_fastEnemyTexture;
+            break;
+
+        case EnemyType::Tank:
+            texture = m_tankEnemyTexture;
+            break;
+        }
+
+        DrawTexturePro(
+            texture,
+
+            // Source rectangle: entire texture
+            {
+                0.0f,
+                0.0f,
+                static_cast<float>(texture.width),
+                static_cast<float>(texture.height)
+            },
+
+            // Destination rectangle:
+            // centered exactly at the enemy's world position
+            {
+                position.x,
+                position.y,
+                static_cast<float>(texture.width),
+                static_cast<float>(texture.height)
+            },
+
+            // Rotation origin:
+            // center of the texture
+            {
+                texture.width / 2.0f,
+                texture.height / 2.0f
+            },
+
+            // Rotation in degrees
+            enemy.rotation,
+
+            WHITE
+        );
     }
 
     //Render Powerups
@@ -82,36 +176,39 @@ void Renderer::Render(const GameWorld& world)
         const Vector2 position = world.powerupPositions[i].value;
         Color color = WHITE;
 
+        Texture2D texture{};
         switch (world.powerups[i].type)
         {
         case PowerupType::DoubleShot:
-            color = PINK;
+            texture = m_doubleShotTexture;
             break;
 
         case PowerupType::TripleShot:
-            color = PURPLE;
+            texture = m_tripleShotTexture;
             break;
 
         case PowerupType::RapidFire:
-            color = YELLOW;
+            texture = m_rapidFireTexture;
             break;
 
         case PowerupType::SpeedBoost:
-            color = ORANGE;
+            texture = m_speedBoostTexture;
             break;
 
         case PowerupType::Shield:
-            color = SKYBLUE;
+            texture = m_shieldTexture;
             break;
 
         case PowerupType::Heal:
-            color = GREEN;
+            texture = m_healthPackTexture;
             break;
         }
 
-        DrawCircleV(
-            position,
-            10.0f,
+        //draw the powerup texture at the powerup's position, centered
+        DrawTexture(
+            texture,
+            static_cast<int>(position.x - texture.width / 2),
+            static_cast<int>(position.y - texture.height / 2),
             color
         );
        

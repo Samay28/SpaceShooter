@@ -21,12 +21,20 @@ void AISystem::Update(GameWorld& world, const EnemyDatabase& enemyDatabase, Vect
 
             const float distance = Vector2Length(dir);
 
-            
+              
             if (distance > 5.f)
             {
                 dir = Vector2Normalize(dir);
 
                 velocity.value = Vector2Scale(dir, definition.moveSpeed);
+
+                // Rotate the enemy to face the direction of movement
+                //antan2 return the angle of the direction vector
+                float angle = atan2f(dir.y, dir.x) * RAD2DEG; //value in degrees
+
+                //atan2 assumes 0 degrees points RIGHT
+                //so add 90 degrees to rotate the sprite's fwd direction to point UP
+                enemy.rotation = angle + 90.f;
             }
             else
             {
@@ -42,6 +50,29 @@ void AISystem::Update(GameWorld& world, const EnemyDatabase& enemyDatabase, Vect
         {
             velocity.value =
             { 0.0f, 0.0f };
+
+            // Face the player while attacking.
+            Vector2 directionToPlayer =
+                Vector2Subtract(
+                    playerPosition,
+                    position.value
+                );
+
+            if (Vector2Length(directionToPlayer) > 0.001f)
+            {
+                directionToPlayer =
+                    Vector2Normalize(
+                        directionToPlayer
+                    );
+
+                const float angle =
+                    atan2f(
+                        directionToPlayer.y,
+                        directionToPlayer.x
+                    ) * RAD2DEG;
+
+                enemy.rotation = angle + 90.0f;
+            }
 
             if (enemy.stateTimer <= 0.0f)
             {
@@ -86,6 +117,8 @@ void AISystem::ChooseNewTarget(GameWorld& world, size_t index)
         if(valid)
         {
             foundTarget = true;
+            //rotate AI to face the new target position
+
             break; // Found a valid target position
         }
     }
