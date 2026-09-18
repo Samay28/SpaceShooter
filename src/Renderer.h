@@ -24,9 +24,9 @@ public:
     void DrawHUD(const Player& player, const GameWorld& world, float remainingTime);
     void DrawHealthBar(const Player& player);
     void DrawGameOver(const GameWorld& world);
+    void DrawBackground();
 
     void DrawProfiler(const Profiler& profiler, float fixedDeltaTime, int simulationSteps);
-
 private:
     int m_screenWidth;
     int m_screenHeight;
@@ -45,4 +45,7 @@ private:
     Texture2D m_speedBoostTexture;
     Texture2D m_shieldTexture;
     Texture2D m_healthPackTexture;
+
+    Texture2D m_backgroundTexture;
+
 };

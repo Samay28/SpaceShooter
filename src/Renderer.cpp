@@ -47,6 +47,9 @@ Renderer::Renderer(
     m_healthPackTexture =
         LoadTexture("assets/powerups/heal.png");
 
+    m_backgroundTexture =
+        LoadTexture("assets/backgrounds/background.png");
+
 }
 
 Renderer::~Renderer()
@@ -62,6 +65,7 @@ Renderer::~Renderer()
     UnloadTexture(m_speedBoostTexture);
     UnloadTexture(m_shieldTexture);
     UnloadTexture(m_healthPackTexture);
+    UnloadTexture(m_backgroundTexture);
 }
 
 void Renderer::BeginFrame()
@@ -69,6 +73,7 @@ void Renderer::BeginFrame()
     BeginDrawing();
 
     ClearBackground(BLACK);
+    DrawBackground();
 }
 
 void Renderer::EndFrame()
@@ -597,4 +602,22 @@ void Renderer::DrawProfiler(const Profiler& profiler, float fixedDeltaTime, int 
         17,
         frameTime > frameBudget ? RED : GREEN
     );
+}
+
+void Renderer::DrawBackground()
+{
+    constexpr int tilesize = 256;
+
+    for(int y=0; y<m_screenHeight; y += tilesize)
+    {
+        for(int x = 0; x < m_screenWidth; x += tilesize)
+        {
+            DrawTexture(
+                m_backgroundTexture,
+                x,
+                y,
+                WHITE
+            );
+        }
+    }
 }
