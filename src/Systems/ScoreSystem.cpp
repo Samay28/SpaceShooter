@@ -23,6 +23,8 @@ void ScoreSystem::Update(GameWorld& world, float deltaTime)
 void ScoreSystem::RegisterEnemyDeath(GameWorld& world, const Enemy& enemy, Vector2 enemyPos, const EnemyDatabase& enemyDatabase)
 {
     const EnemyDefinition& definition = enemyDatabase.Get(enemy.type);  
+    gameBranchController->recordEnemyKill(enemy.type); // Record the enemy kill in the GameBranchController
+
 
     ScorePopup popup{};
     popup.position = enemyPos;

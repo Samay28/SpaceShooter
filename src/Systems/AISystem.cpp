@@ -39,10 +39,12 @@ void AISystem::Update(GameWorld& world, const EnemyDatabase& enemyDatabase, Vect
             else
             {
                 velocity.value = { 0.f, 0.f };
-                enemy.state = EnemyState::Attacking;
-                enemy.stateTimer = RandomAttackDuration(definition);
 
-                enemy.weaponCooldown = 0.f; // Reset weapon cooldown when switching to attacking state
+                    enemy.state = EnemyState::Attacking;
+                    enemy.stateTimer = RandomAttackDuration(definition);
+
+                    enemy.weaponCooldown = 0.f; // Reset weapon cooldown when switching to attacking state
+                
             }
         }
         //----------------Attacking----------------

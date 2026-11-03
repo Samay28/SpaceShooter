@@ -44,6 +44,8 @@ public:
     //---------Score Popups----------------
     std::vector<ScorePopup> scorePopup;
 
+    //clear all entities and components
+    void ClearAll();
 private:
     EntityID m_nextEntityID = 1; // Start from 1 to avoid using INVALID_ENTITY_ID
     

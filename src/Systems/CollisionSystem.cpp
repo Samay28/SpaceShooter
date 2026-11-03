@@ -42,7 +42,7 @@ void CollisionSystem::Update(GameWorld& world, Player& player, const EnemyDataba
                 const float distance = Vector2Distance(projectilePostion, enemyPosition);
                 const EnemyDefinition& definition = enemyDatabase.Get(enemy.type);
 
-                if (distance <= definition.radius + 4.f) 
+                if (distance <= definition.radius + 4.f && !enemy.isImposter) 
                 {
                     // Collision detected, apply damage to the enemy
                     world.enemyHealth[i].currentHealth -= projectile.damage;

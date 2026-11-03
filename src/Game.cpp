@@ -1,11 +1,16 @@
 #include "Game.h"
+#include <iostream>
 #include "raylib.h" // Include raylib for timing functions and etc since only renderer is abstracted 
+
+
+
 
 Game::Game()
     : m_renderer(1200, 720, "Space Shooter")
     , m_player({ 640.0f, 600.0f })
     , m_projectileSpeed(500.0f)
     , m_gameTimer(150.f)
+    , m_gameBranchController()
 {   
 
     if (!m_enemyDatabase.Load("assets/enemies.txt"))
@@ -37,6 +42,12 @@ Game::Game()
     gameOverSound = LoadSound("assets/sounds/game_over.wav");
     PlaySound(startGameSound);
     PlayMusicStream(bgMusic);
+
+
+    m_scoreSystem.SetGameBranchController(
+        &m_gameBranchController
+    );
+    
 }
 
 void Game::Run()
@@ -90,6 +101,11 @@ void Game::Run()
                 
             }
         }
+        else if (m_gameState == GameState::CutScene)
+        {
+            UpdateCutScene(FixedDeltaTime);
+
+        }
         else
         {
             //prevent accumulated real time from being simulated
@@ -98,6 +114,7 @@ void Game::Run()
             m_simulationStepsThisFrame = 0; // Reset the simulation step counter when the game is paused or over
         }
         Render();
+       
 
         m_profiler.EndFrame();
     }
@@ -107,9 +124,6 @@ void Game::Run()
 
 void Game::UpdateSimulation(float fixedDeltaTime)
 {   
-
-
-
 
     m_profiler.Begin("Simulation");
 
@@ -122,6 +136,16 @@ void Game::UpdateSimulation(float fixedDeltaTime)
     UpdateMusicStream(bgMusic);
     //----------------- Timer ----------------
     m_gameTimer.Update(fixedDeltaTime);
+
+
+    if (m_gameTimer.CheckForCutsceneTime(140.0f))
+    {
+        BeginCutscene();
+        m_profiler.End("Simulation");
+        return;
+    }
+
+
     if (m_gameTimer.IsFinished())
     {
         EndGame();
@@ -206,7 +230,7 @@ void Game::UpdateSimulation(float fixedDeltaTime)
         m_world,
         m_enemyDatabase,
         m_player.GetPosition(),
-        fixedDeltaTime);
+        FixedDeltaTime);
 
     m_profiler.End("AI");
 
@@ -287,6 +311,66 @@ void Game::UpdateSimulation(float fixedDeltaTime)
     m_profiler.End("Simulation");
 }
 
+void Game::UpdateCutScene(float fixedDeltaTime)
+{
+    // Only update the final dialogue countdown here.
+    if (m_dialogueDisplayMode == DialogueDisplayMode::TimedMessage)
+    {
+        m_cutSceneTimer -= fixedDeltaTime;
+
+        if (m_cutSceneTimer <= 0.0f)
+        {
+            m_cutSceneTimer = 0.0f;
+
+            m_cutSceneImposter.visible = false;
+
+            // End the cutscene permanently.
+            m_gameState = GameState::Playing;
+
+            m_dialogueDisplayMode = DialogueDisplayMode::Choices;
+        }
+    }
+
+    if (m_dialogueDisplayMode == DialogueDisplayMode::Choices)
+    {
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        {
+            Vector2 mousePosition = GetMousePosition();
+
+            if (CheckCollisionPointRec(
+                mousePosition,
+                Renderer::GetChoiceButtonRect(0)))
+            {
+                // Select Accept.
+                m_gameBranchController.SelectChoice(0);
+
+                m_dialogueDisplayMode = DialogueDisplayMode::Continue;
+            }
+            else if (CheckCollisionPointRec(
+                mousePosition,
+                Renderer::GetChoiceButtonRect(1)))
+            {
+                // Select Reject.
+                m_gameBranchController.SelectChoice(1);
+
+                m_dialogueDisplayMode = DialogueDisplayMode::Continue;
+            }
+        }
+    }
+    if (m_dialogueDisplayMode == DialogueDisplayMode::Continue)
+    {
+        if (IsKeyPressed(KEY_SPACE))
+        {
+            // Assumes nodes 1 and 2 each have one outgoing
+            // Continue choice leading to node 3 or node 4.
+            m_gameBranchController.SelectChoice(0);
+
+            m_dialogueDisplayMode = DialogueDisplayMode::TimedMessage;
+            m_cutSceneTimer = 3.0f;
+        }
+    }
+}
+
 void Game::Render()
 {   
     m_profiler.Begin("Render");
@@ -303,6 +387,29 @@ void Game::Render()
     if(m_showProfiler)
     {
         m_renderer.DrawProfiler(m_profiler, FixedDeltaTime, m_simulationStepsThisFrame); // Render the profiler
+    }
+
+    if (m_gameState == GameState::CutScene &&
+        m_cutSceneImposter.visible)
+    {
+        m_renderer.DrawCutsceneImposter(
+            m_cutSceneImposter.type,
+            m_cutSceneImposter.position,
+            m_player.GetPosition()
+        );
+        // Get the current dialogue node.
+        const DialogueNode* currentNode =
+            m_gameBranchController.GetCurrentNode();
+
+        // Draw the dialogue UI on top of the world.
+        if (currentNode != nullptr)
+        {
+            m_renderer.DrawCutsceneUI(
+                *currentNode,
+                m_dialogueDisplayMode,
+                m_cutSceneTimer
+            );
+        }
     }
 
     m_renderer.EndFrame(); // Finish drawing 
@@ -398,17 +505,8 @@ void Game::RestartGame()
     m_spawnSystem.Reset();
 
     // Clear runtime entities
-    m_world.enemies.clear();
-    m_world.enemyHealth.clear();
-    m_world.enemyPositions.clear();
-    m_world.enemyVelocities.clear();
-
-    m_world.projectiles.clear();
-    m_world.projectilePositions.clear();
-    m_world.projectileVelocities.clear();
-
-    m_world.powerups.clear();
-    m_world.powerupPositions.clear();
+    m_world.ClearAll();
+    m_spatialGrid.Clear(); // Clear the spatial grid
 
     m_world.playerPowerups.clear();
 
@@ -416,6 +514,10 @@ void Game::RestartGame()
 
     PlaySound(startGameSound);
     PlayMusicStream(bgMusic);
+
+    //reset the game branch controller
+    m_gameBranchController.BuildGraph();
+    m_gameBranchController.resetEnemyKillCount();
 }
 
 void Game::EndGame()
@@ -450,6 +552,26 @@ void Game::PauseGame()
     }
 
 
+}
+
+void Game::BeginCutscene()
+{
+    m_world.ClearAll();
+    m_spatialGrid.Clear();
+
+    m_cutSceneImposter.type = m_gameBranchController.findImposter();
+
+    m_cutSceneImposter.position = {
+      GetScreenWidth() * 0.5f,
+      GetScreenHeight() * 0.5f
+    };
+    m_cutSceneImposter.visible = true;
+
+    m_dialogueDisplayMode = DialogueDisplayMode::Choices; //always start here
+    m_cutSceneTimer = 0.f; //no countdown till we reach that point
+
+    m_gameState = GameState::CutScene;
+  
 }
 
 

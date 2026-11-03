@@ -1,5 +1,6 @@
 #include "SpawnSystem.h"
 #include "Components/Powerup.h"
+#include "Core/GameBranchController.h"
 #include "raymath.h"
 
 void SpawnSystem::Update(GameWorld& world, const EnemyDatabase& enemyDatabase, float deltaTime)
@@ -118,6 +119,11 @@ void SpawnSystem::SpawnPowerup(GameWorld& world)
 
     world.powerups.push_back(powerup);
     world.powerupPositions.push_back(position);
+}
+
+void SpawnSystem::SpawnImposter(GameWorld& world, const EnemyDatabase& enemyDatabase, GameBranchController& gameBranch)
+{   
+
 }
 
 void SpawnSystem::Reset()

@@ -138,6 +138,7 @@
     <Text Include="assets\weapons.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\GameBranchController.h" />
     <ClInclude Include="src\Components\ActivePowerup.h" />
     <ClInclude Include="src\Components\Enemy.h" />
     <ClInclude Include="src\Components\Health.h" />
@@ -176,6 +177,7 @@
     <ClInclude Include="src\Systems\WeaponSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\GameBranchController.cpp" />
     <ClCompile Include="src\Core\Entity.cpp" />
     <ClCompile Include="src\Core\GameTimer.cpp" />
     <ClCompile Include="src\Core\GameWorld.cpp" />

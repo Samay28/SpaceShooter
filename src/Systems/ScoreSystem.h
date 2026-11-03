@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/GameWorld.h"
 #include "Data/EnemyDatabase.h"
+#include "Core/GameBranchController.h"
 
 class ScoreSystem
 {
@@ -12,6 +13,15 @@ public:
     void LoadHighscore(GameWorld& world);
     void SaveHighscore(GameWorld& world);
 
+
+    void SetGameBranchController(GameBranchController* controller)
+    {
+        gameBranchController = controller;
+    }
+
 private:
     static constexpr float PopupDuration = 1.0f; // Duration for which the score popup is visible
+    GameBranchController* gameBranchController = nullptr; // Pointer to the GameBranchController
+
+   
 };

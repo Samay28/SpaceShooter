@@ -23,11 +23,26 @@
 
 #include "Debug/Profiler.h"
 
+//new extra stuff 
+#include "Core/GameBranchController.h"
+
 enum class GameState
 {
     Playing,
     Paused,
+    CutScene,
     GameOver
+};
+
+struct CutSceneImposter
+{
+    bool visible = false;
+
+    // The imposter uses the sprite of the most-killed enemy type.
+    EnemyType type = EnemyType::Basic;
+
+    // The imposter is positioned independently of GameWorld.
+    Vector2 position = { 0.0f, 0.0f };
 };
 
 class Game
@@ -40,6 +55,7 @@ public:
 
 private:
     void UpdateSimulation(float fixedDeltaTime);
+    void UpdateCutScene(float fixedDeltaTime);
     void Render();
 
     //--------------Projectile Management----------------
@@ -54,6 +70,9 @@ private:
     void PauseGame();
 
     SpatialGrid m_spatialGrid{ 1200, 720, 100.0f }; // Create a spatial grid with world size and cell size
+
+    //for cutscene management
+    void BeginCutscene();
 
 private:
     GameWorld m_world;
@@ -78,6 +97,10 @@ private:
     Profiler m_profiler;
     bool m_showProfiler = false;
 
+    GameBranchController m_gameBranchController;
+
+    CutSceneImposter m_cutSceneImposter;
+
     //--------------Projectile Management----------------
     float m_projectileSpeed = 400.0f; // Speed of the projectiles
 
@@ -94,6 +117,12 @@ private:
     static constexpr int MaxSimSteps = 5; // Maximum number of simulation steps per frame, incase the game lags, to prevent spiral of death
     int m_simulationStepsThisFrame = 0; // Count the number of simulation steps taken in this frame
 
+
+    DialogueDisplayMode m_dialogueDisplayMode =
+        DialogueDisplayMode::Choices; // Current display mode for the cutscene dialogue
+
+    // Countdown timer for the final dialogue message.
+    float m_cutSceneTimer = 0.0f;
 
     Sound startGameSound;
     Sound gameOverSound;
