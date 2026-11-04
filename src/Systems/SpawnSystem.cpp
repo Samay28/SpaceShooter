@@ -10,7 +10,7 @@ void SpawnSystem::Update(GameWorld& world, const EnemyDatabase& enemyDatabase, f
     //-------------- Enemy spawning logic ----------------
     if(m_spawnTimer <= 0.0f)
     {
-        SpawnEnemy(world, enemyDatabase);
+        SpawnRandomEnemy(world, enemyDatabase);
         m_spawnTimer = m_spawnInterval;
     }
 
@@ -23,7 +23,7 @@ void SpawnSystem::Update(GameWorld& world, const EnemyDatabase& enemyDatabase, f
     }
 }
 
-void SpawnSystem::SpawnEnemy(GameWorld& world, const EnemyDatabase& enemyDatabase)
+void SpawnSystem::SpawnRandomEnemy(GameWorld& world, const EnemyDatabase& enemyDatabase)
 {   
     if(world.enemies.size() >= m_maxEnemies)
     {
@@ -32,9 +32,39 @@ void SpawnSystem::SpawnEnemy(GameWorld& world, const EnemyDatabase& enemyDatabas
     // Randomly select an enemy type
     const int typeIndex = GetRandomValue(0, static_cast<int>(EnemyType::Tank)); //Because Tank is the last enum value, we can use it to get the range of enemy types
     const EnemyType type = static_cast<EnemyType>(typeIndex);
+    SpawnEnemy(world, enemyDatabase, type);
+}
+
+void SpawnSystem::SpawnPowerup(GameWorld& world)
+{
+    const int typeIndex = GetRandomValue(0, static_cast<int>(PowerupType::Heal)); // Because Heal is the last enum value, we can use it to get the range of powerup types
+
+    Powerup powerup{};
+    powerup.type = static_cast<PowerupType>(typeIndex);
+    
+    Position position{};
+
+    const int minX = 50;
+    const int maxX = GetScreenWidth() - 50;
+
+    const int minY = GetScreenWidth() * 0.5f;
+    const int maxY = GetScreenHeight() - 50;
+
+    position.value = {
+       static_cast<float>(GetRandomValue(minX, maxX)),
+       static_cast<float>(GetRandomValue(minY, maxY))
+    };
+
+    world.powerups.push_back(powerup);
+    world.powerupPositions.push_back(position);
+}
+
+void SpawnSystem::SpawnEnemy(GameWorld& world, const EnemyDatabase& enemyDatabase, EnemyType type)
+{
+    
 
     // Get the enemy definition from the database
-    const EnemyDefinition& definition = enemyDatabase.Get(type); 
+    const EnemyDefinition& definition = enemyDatabase.Get(type);
 
     //create a new enemy instance
     Enemy enemy{};
@@ -100,34 +130,31 @@ void SpawnSystem::SpawnEnemy(GameWorld& world, const EnemyDatabase& enemyDatabas
     world.enemyVelocities.push_back(velocity);
 }
 
-void SpawnSystem::SpawnPowerup(GameWorld& world)
-{
-    const int typeIndex = GetRandomValue(0, static_cast<int>(PowerupType::Heal)); // Because Heal is the last enum value, we can use it to get the range of powerup types
-
-    Powerup powerup{};
-    powerup.type = static_cast<PowerupType>(typeIndex);
-    
-    Position position{};
-    position.value = {
-       static_cast<float>(
-           GetRandomValue(50, GetScreenWidth() - 50)
-       ),
-       static_cast<float>(
-           GetRandomValue(50, GetScreenHeight() - 50)
-       )
-    };
-
-    world.powerups.push_back(powerup);
-    world.powerupPositions.push_back(position);
-}
-
-void SpawnSystem::SpawnImposter(GameWorld& world, const EnemyDatabase& enemyDatabase, GameBranchController& gameBranch)
-{   
-
-}
 
 void SpawnSystem::Reset()
 {
     m_spawnTimer = 1.0f;
     m_powerupTimer = 5.0f;
+}
+
+void SpawnSystem::SpawnImposter(GameWorld& world, const EnemyDatabase& enemyDatabase, bool isTeam, EnemyType enemy)
+{
+    if (teamSpawned)
+    {
+        return;
+    }
+
+    if (isTeam)
+    {
+        //spawn 5 of the imposter enemies near the player's position
+        //remove that type from the enemy database so it doesnt spawn anymore
+    }
+    else
+    {
+        //spawn 8 of the imposter enemies on the top of the screen, with random x positions
+        for (int i = 0; i < 8; ++i)
+        {
+            SpawnEnemy(world, enemyDatabase, enemy);
+        }
+    }
 }

@@ -104,7 +104,8 @@ void Game::Run()
         else if (m_gameState == GameState::CutScene)
         {
             UpdateCutScene(FixedDeltaTime);
-
+            m_accumulator = 0.0f;
+            m_simulationStepsThisFrame = 0; // Reset the simulation step counter when the game is paused or over
         }
         else
         {
@@ -352,7 +353,7 @@ void Game::UpdateCutScene(float fixedDeltaTime)
             {
                 // Select Reject.
                 m_gameBranchController.SelectChoice(1);
-
+                m_spawnSystem.SpawnImposter(m_world, m_enemyDatabase, false, m_gameBranchController.findImposter());
                 m_dialogueDisplayMode = DialogueDisplayMode::Continue;
             }
         }
@@ -366,7 +367,7 @@ void Game::UpdateCutScene(float fixedDeltaTime)
             m_gameBranchController.SelectChoice(0);
 
             m_dialogueDisplayMode = DialogueDisplayMode::TimedMessage;
-            m_cutSceneTimer = 3.0f;
+            m_cutSceneTimer = 6.0f;
         }
     }
 }
