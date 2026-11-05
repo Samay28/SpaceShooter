@@ -13,6 +13,7 @@ public:
     //for cutscene trigger
     bool CheckForCutsceneTime(float timeToTrigger);
     void SetCutsceneTriggered(bool triggered) { isCutsceneTriggered = triggered; }
+    void ResetCutsceneForRestart() { isCutsceneTriggered = false; }
 
 private:
     float m_duration;

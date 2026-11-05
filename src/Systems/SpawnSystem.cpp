@@ -190,6 +190,8 @@ void SpawnSystem::Reset()
 {
     m_spawnTimer = 1.0f;
     m_powerupTimer = 5.0f;
+    isSpawnAltered = false;
+    
 }
 
 void SpawnSystem::SpawnImposter(GameWorld& world, const EnemyDatabase& enemyDatabase, EnemyType enemy)

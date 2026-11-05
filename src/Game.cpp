@@ -546,12 +546,16 @@ void Game::RestartGame()
     m_world.ClearAll();
     m_spatialGrid.Clear(); // Clear the spatial grid
 
+    m_gameTimer.ResetCutsceneForRestart();
+
     m_world.playerPowerups.clear();
 
     m_spawnSystem.Reset();
 
     PlaySound(startGameSound);
     PlayMusicStream(bgMusic);
+
+    cutsceneStartTime = 130.f;
 
     //reset the game branch controller
     m_gameBranchController.BuildGraph();

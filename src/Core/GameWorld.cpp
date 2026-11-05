@@ -18,4 +18,9 @@ void GameWorld::ClearAll()
 
     powerups.clear();
     powerupPositions.clear();
+
+    //clear ally now
+    allies.clear();
+    allyHealth.clear();
+    allyPositions.clear();
 }
