@@ -39,7 +39,6 @@ bool GameTimer::CheckForCutsceneTime(float timeToTrigger)
     //so if deltaTime is less than or equal to timeToTrigger and isTriggered is false, we will trigger the cutscene
     if (m_remainingTime <= timeToTrigger && !isCutsceneTriggered)
     {   
-        isCutsceneTriggered = true;
         return true;
     }
     return false;

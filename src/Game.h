@@ -109,6 +109,7 @@ private:
 
 
     GameTimer m_gameTimer{ 150.f };
+    float cutsceneStartTime = 140.f;
     ScoreSystem m_scoreSystem;
 
     //simualtion timing, to make sure the game runs at a fixed time step for physics and logic updates

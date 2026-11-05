@@ -80,4 +80,21 @@ void PowerupSystem::ApplyPowerup(GameWorld& world, Player& player, PowerupType t
     world.playerPowerups.push_back(active);
 }
 
+void PowerupSystem::ApplyAllPowerups(GameWorld& world, Player& player, const PowerupDatabase& database)
+{
+
+    //TripleShot,
+    //RapidFire,
+    //SpeedBoost,
+    //Shield,
+    //Heal
+    //we apply all these powerups at once, if player rejects the offer
+
+    for(const PowerupType type : {PowerupType::TripleShot, PowerupType::RapidFire, PowerupType::SpeedBoost, PowerupType::Shield, PowerupType::Heal})
+    {
+        const PowerupDefinition& definition = database.Get(type);
+        ApplyPowerup(world, player, type, definition);
+    }
+}
+
 

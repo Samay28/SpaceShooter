@@ -108,7 +108,7 @@ void GameBranchController::BuildGraph()
     {
         {
             "Prepare for battle!",
-            3,
+            4,
             NarrativeAction::None
         }
     };

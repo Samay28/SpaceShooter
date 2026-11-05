@@ -139,11 +139,19 @@ void Game::UpdateSimulation(float fixedDeltaTime)
     m_gameTimer.Update(fixedDeltaTime);
 
 
-    if (m_gameTimer.CheckForCutsceneTime(140.0f))
-    {
-        BeginCutscene();
-        m_profiler.End("Simulation");
-        return;
+    if (m_gameTimer.CheckForCutsceneTime(cutsceneStartTime))
+    {   
+        if (m_world.score > 0)
+        {
+            BeginCutscene();
+            m_gameTimer.SetCutsceneTriggered(true);
+            m_profiler.End("Simulation");
+            return;
+        }
+        else
+        {
+             cutsceneStartTime -= 10;
+        }
     }
 
 
@@ -354,6 +362,7 @@ void Game::UpdateCutScene(float fixedDeltaTime)
                 // Select Reject.
                 m_gameBranchController.SelectChoice(1);
                 m_spawnSystem.SpawnImposter(m_world, m_enemyDatabase, false, m_gameBranchController.findImposter());
+                m_powerupSystem.ApplyAllPowerups(m_world, m_player, m_powerupDatabse);
                 m_dialogueDisplayMode = DialogueDisplayMode::Continue;
             }
         }
