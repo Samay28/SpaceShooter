@@ -12,11 +12,13 @@ public:
         const EnemyDatabase& enemyDatabase,
         Vector2 playerPosition,
         float deltaTime);
-
+    static bool AllyChooseEnemyToAttack(const GameWorld& world, size_t& outEnemyIndex);
 private:
     void ChooseNewTarget(
         GameWorld& world,
         size_t index);
+
+   
 
     float RandomAttackDuration(
         const EnemyDefinition& definition);

@@ -32,6 +32,7 @@ void SpawnSystem::SpawnRandomEnemy(GameWorld& world, const EnemyDatabase& enemyD
     // Randomly select an enemy type
     const int typeIndex = GetRandomValue(0, static_cast<int>(EnemyType::Tank)); //Because Tank is the last enum value, we can use it to get the range of enemy types
     const EnemyType type = static_cast<EnemyType>(typeIndex);
+    
     SpawnEnemy(world, enemyDatabase, type);
 }
 
@@ -61,7 +62,10 @@ void SpawnSystem::SpawnPowerup(GameWorld& world)
 
 void SpawnSystem::SpawnEnemy(GameWorld& world, const EnemyDatabase& enemyDatabase, EnemyType type)
 {
-    
+    if (isSpawnAltered && type == AllyType)
+    {
+        return;
+    }
 
     // Get the enemy definition from the database
     const EnemyDefinition& definition = enemyDatabase.Get(type);
@@ -130,6 +134,57 @@ void SpawnSystem::SpawnEnemy(GameWorld& world, const EnemyDatabase& enemyDatabas
     world.enemyVelocities.push_back(velocity);
 }
 
+void SpawnSystem::SpawnAllies(GameWorld& world, const EnemyDatabase& enemyDatabase, EnemyType allyType)
+{
+    const int allyCount = 4;
+    AllyType = allyType;
+    isSpawnAltered = true;
+
+    const EnemyDefinition& definition = enemyDatabase.Get(allyType);
+
+    // Fixed formation reference: bottom-center of the screen.
+    const Vector2 formationCenter =
+    {
+        GetScreenWidth() * 0.5f,
+        GetScreenHeight() - 100.0f
+    };
+
+    // Two allies left and two allies right of the bottom-center.
+    const Vector2 offsets[4] =
+    {
+        {-180.0f, 0.0f},
+        { -90.0f, 0.0f},
+        {  90.0f, 0.0f},
+        { 180.0f, 0.0f}
+    };
+
+    for (int i = 0; i < allyCount; i++)
+    {
+        Ally ally{};
+        ally.type = allyType;
+        ally.weaponCooldown = 0.f;
+
+        Position position{};
+
+        // Position relative to screen bottom-center, NOT the player.
+        position.value =
+        {
+            formationCenter.x + offsets[i].x,
+            formationCenter.y + offsets[i].y
+        };
+
+        Health health{};
+
+        health.currentHealth = definition.maxHealth;
+        health.MaxHealth = definition.maxHealth;
+
+        world.allies.push_back(ally);
+        world.allyPositions.push_back(position);
+        world.allyHealth.push_back(health);
+    }
+}
+
+
 
 void SpawnSystem::Reset()
 {
@@ -137,24 +192,18 @@ void SpawnSystem::Reset()
     m_powerupTimer = 5.0f;
 }
 
-void SpawnSystem::SpawnImposter(GameWorld& world, const EnemyDatabase& enemyDatabase, bool isTeam, EnemyType enemy)
+void SpawnSystem::SpawnImposter(GameWorld& world, const EnemyDatabase& enemyDatabase, EnemyType enemy)
 {
     if (teamSpawned)
     {
         return;
     }
 
-    if (isTeam)
-    {
-        //spawn 5 of the imposter enemies near the player's position
-        //remove that type from the enemy database so it doesnt spawn anymore
-    }
-    else
-    {
+
         //spawn 8 of the imposter enemies on the top of the screen, with random x positions
         for (int i = 0; i < 8; ++i)
         {
             SpawnEnemy(world, enemyDatabase, enemy);
         }
-    }
+
 }

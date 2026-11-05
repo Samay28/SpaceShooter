@@ -140,6 +140,29 @@ void AISystem::ChooseNewTarget(GameWorld& world, size_t index)
     world.enemies[index].targetPosition = newTarget;
 }
 
+bool AISystem::AllyChooseEnemyToAttack(const GameWorld& world, size_t& outEnemyIndex)
+{
+    size_t validEnemyCount = 0;
+
+    // Reservoir sampling lets us select a uniformly random enemy
+  // without creating a temporary vector of candidates.
+    for (size_t i = 0; i < world.enemies.size(); ++i)
+    {
+        const Enemy& enemy = world.enemies[i];
+        ++validEnemyCount;
+
+        //each valid enemy gets an equal chance of being selected
+        if(GetRandomValue(1, static_cast<int>(validEnemyCount)) == 1)
+        {
+            outEnemyIndex = i;
+        }
+    }
+
+    return validEnemyCount > 0;
+}
+
+
+
 float AISystem::RandomAttackDuration(const EnemyDefinition& definition)
 {
     return GetRandomValue( static_cast<int>(definition.attackDurationMin * 100.f),

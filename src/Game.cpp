@@ -352,7 +352,7 @@ void Game::UpdateCutScene(float fixedDeltaTime)
             {
                 // Select Accept.
                 m_gameBranchController.SelectChoice(0);
-
+                m_spawnSystem.SpawnAllies(m_world, m_enemyDatabase, m_gameBranchController.findImposter());
                 m_dialogueDisplayMode = DialogueDisplayMode::Continue;
             }
             else if (CheckCollisionPointRec(
@@ -361,7 +361,7 @@ void Game::UpdateCutScene(float fixedDeltaTime)
             {
                 // Select Reject.
                 m_gameBranchController.SelectChoice(1);
-                m_spawnSystem.SpawnImposter(m_world, m_enemyDatabase, false, m_gameBranchController.findImposter());
+                m_spawnSystem.SpawnImposter(m_world, m_enemyDatabase, m_gameBranchController.findImposter());
                 m_powerupSystem.ApplyAllPowerups(m_world, m_player, m_powerupDatabse);
                 m_dialogueDisplayMode = DialogueDisplayMode::Continue;
             }

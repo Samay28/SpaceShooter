@@ -7,7 +7,8 @@ using EntityID = uint32_t; // Define EntityID as a 32-bit unsigned integer
 enum class ProjectileOwner : uint8_t
 {
     Player,
-    Enemy
+    Enemy,
+    Ally
 };
 
 struct Projectile

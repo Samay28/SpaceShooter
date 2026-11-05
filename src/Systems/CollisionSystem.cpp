@@ -27,7 +27,7 @@ void CollisionSystem::Update(GameWorld& world, Player& player, const EnemyDataba
         const Vector2 projectilePostion = world.projectilePositions[projectileIndex].value;
 
         //-------------------- Player Projectile vs Enemy Collision --------------------
-        if (projectile.owner == ProjectileOwner::Player)
+        if (projectile.owner == ProjectileOwner::Player || projectile.owner == ProjectileOwner::Ally)
         {   
             //ask the grid for only enemies near the projectile, to reduce the number of checks needed
             const std::vector<size_t> candidates = spatialGrid.QueryEnemiesInRadius(projectilePostion, 4.f);
@@ -56,7 +56,7 @@ void CollisionSystem::Update(GameWorld& world, Player& player, const EnemyDataba
         }
 
         //-------------------- Enemy Projectile vs Player Collision --------------------
-        else
+        else if(projectile.owner == ProjectileOwner::Enemy)
         {
             const Vector2 playerPosition = player.GetPosition();
             const float distance = Vector2Distance(projectilePostion, playerPosition);

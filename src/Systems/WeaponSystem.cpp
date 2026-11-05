@@ -1,5 +1,5 @@
 #include "WeaponSystem.h"
-
+#include "AISystem.h"
 #include "raymath.h"
 #include "Player.h"
 #include "Components/ActivePowerup.h"
@@ -57,14 +57,112 @@ void WeaponSystem::Update(GameWorld& world, Player& player,const EnemyDatabase& 
         enemy.weaponCooldown = 1.0f / weaponDef.fireRate;
 
     }
-        //-----------------Player Weapon-----------------
-        if (!player.IsShootPressed())
+
+    //-----------------Ally Weapon Logic------------------
+    for (int i = 0; i < world.allies.size(); ++i)
+    {
+        Ally& ally = world.allies[i];
+
+        const EnemyDefinition& definition = enemyDatabase.Get(ally.type);
+        const WeaponDefinition& weaponDef = weaponDatabase.Get(definition.weaponType);
+
+        ally.weaponCooldown -= deltaTime;
+        if (ally.weaponCooldown > 0.f)
         {
-            return; // Player is not trying to shoot, exit the function
+            continue; // Skip if the weapon is still on cooldown
+        }
+        if(weaponDef.fireRate <= 0.f)
+        {
+            continue; // Skip if the weapon has no fire rate
         }
 
-        const WeaponDefinition& wepdef = weaponDatabase.Get(WeaponType::Single);
-        FirePlayerWeapon(world, player, wepdef);
+        size_t targetIndex = 0;
+        const bool hasTarget = AISystem::AllyChooseEnemyToAttack(world, targetIndex);
+    
+        if(!hasTarget)
+        {
+            continue; // No valid target found, skip this ally
+        }
+        // Retrieve ally and target positions.
+        const Vector2 allyPosition =
+            world.allyPositions[i].value;
+
+        const Vector2 targetPosition =
+            world.enemyPositions[targetIndex].value;
+
+        // Calculate direction from ally to enemy.
+        Vector2 direction =
+            Vector2Subtract(targetPosition, allyPosition);
+
+        // Prevent normalization of a zero-length vector.
+        if (Vector2Length(direction) < 0.001f)
+            continue;
+
+        direction = Vector2Normalize(direction);
+
+        const float angle =
+            atan2f(direction.y, direction.x) * RAD2DEG;
+
+        ally.rotation = angle + 90.0f;
+
+        // Spawn projectiles based on the selected weapon definition.
+        for (uint8_t shot = 0;
+            shot < weaponDef.projectileCount;
+            ++shot)
+        {
+            Vector2 projectileDirection = direction;
+
+            // Apply the same spread logic used by enemies.
+            if (weaponDef.projectileCount > 1)
+            {
+                const float spreadAngle =
+                    weaponDef.projectileSpread;
+
+                const float offset =
+                    (shot == 0) ? -spreadAngle : spreadAngle;
+
+                projectileDirection =
+                    Vector2Rotate(
+                        projectileDirection,
+                        offset * DEG2RAD
+                    );
+            }
+
+            Projectile projectile{};
+
+            //Ally projectiles must be identified separately.
+            projectile.owner = ProjectileOwner::Ally;
+
+            projectile.damage = weaponDef.damage;
+            projectile.lifetime = 5.0f;
+
+            world.projectiles.push_back(projectile);
+
+            world.projectilePositions.push_back(
+                Position{ allyPosition }
+            );
+
+            world.projectileVelocities.push_back(
+                Velocity{
+                    Vector2Scale(
+                        projectileDirection,
+                        weaponDef.projectileSpeed
+                    )
+                }
+            );
+        }
+
+        // Reset cooldown using the weapon's fire rate.
+        ally.weaponCooldown = 1.0f / weaponDef.fireRate;
+    }
+        //-----------------Player Weapon-----------------
+        if (player.IsShootPressed())
+        {
+            const WeaponDefinition& wepdef =
+                weaponDatabase.Get(WeaponType::Single);
+
+            FirePlayerWeapon(world, player, wepdef);
+        }
     
 }
 

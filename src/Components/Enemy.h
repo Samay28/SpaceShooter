@@ -28,3 +28,12 @@ struct Enemy
     bool isImposter = false; // Flag to indicate if this enemy is the imposter
 };
 
+struct Ally
+{
+    EnemyType type = EnemyType::Basic; // Default to Basic type
+    float rotation = 0.f;
+    float weaponCooldown = 0.f;
+};
+
+
+

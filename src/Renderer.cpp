@@ -115,6 +115,17 @@ void Renderer::Render(const GameWorld& world)
         }
     }
 
+    //render ally projectiles
+    for(size_t i = 0; i < world.projectiles.size(); ++i)
+    {
+        const Projectile& projectile = world.projectiles[i];
+        if (projectile.owner == ProjectileOwner::Ally)
+        {
+            const Vector2 pos = world.projectilePositions[i].value;
+            DrawCircleV(pos, 4.0f, GREEN);
+        }
+    }
+
     // Render enemies
     for (size_t i = 0; i < world.enemies.size(); ++i)
     {
@@ -177,6 +188,61 @@ void Renderer::Render(const GameWorld& world)
 
             WHITE
         );
+    }
+
+    //Render Allies
+    for (size_t i = 0; i < world.allies.size(); i++)
+    {
+        const Ally& ally = world.allies[i];
+        const Position& position = world.allyPositions[i];
+
+        Texture2D texture{};
+        switch (ally.type)
+        {
+        case EnemyType::Basic:
+            texture = m_basicEnemyTexture;
+            break;
+
+        case EnemyType::Duo:
+            texture = m_duoEnemyTexture;
+            break;
+
+        case EnemyType::Fast:
+            texture = m_fastEnemyTexture;
+            break;
+
+        case EnemyType::Tank:
+            texture = m_tankEnemyTexture;
+            break;
+        }
+        Rectangle source = {
+        0.0f,
+        0.0f,
+        static_cast<float>(texture.width),
+        static_cast<float>(texture.height)
+        };
+
+        Rectangle destination = {
+            position.value.x,
+            position.value.y,
+            static_cast<float>(texture.width),
+            static_cast<float>(texture.height)
+        };
+
+        Vector2 origin = {
+            texture.width * 0.5f,
+            texture.height * 0.5f
+        };
+
+        DrawTexturePro(
+            texture,
+            source,
+            destination,
+            origin,
+            ally.rotation,
+            WHITE
+        );
+
     }
 
     //Render Powerups

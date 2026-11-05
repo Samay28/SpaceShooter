@@ -44,6 +44,11 @@ public:
     //---------Score Popups----------------
     std::vector<ScorePopup> scorePopup;
 
+    //---------Allies----------------
+    std::vector<Ally> allies;
+    std::vector<Position> allyPositions;
+    std::vector<Health> allyHealth;
+
     //clear all entities and components
     void ClearAll();
 private:
