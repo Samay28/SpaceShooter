@@ -156,7 +156,7 @@ void WeaponSystem::Update(GameWorld& world, Player& player,const EnemyDatabase& 
         ally.weaponCooldown = 1.0f / weaponDef.fireRate;
     }
         //-----------------Player Weapon-----------------
-        if (player.IsShootPressed())
+        if (player.CanFire())
         {
             const WeaponDefinition& wepdef =
                 weaponDatabase.Get(WeaponType::Single);
@@ -255,5 +255,5 @@ void WeaponSystem::FirePlayerWeapon(GameWorld& world, Player& player, const Weap
         world.projectilePositions.push_back(Position{ spawnPosition });
         world.projectileVelocities.push_back(Velocity{ Vector2Scale(projectileDirection, weapon.projectileSpeed) });
     }
-    player.Fire(); // Reset the player's shooting cooldown
+    //player.Fire(); // Reset the player's shooting cooldown
 }

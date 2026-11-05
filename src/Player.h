@@ -13,9 +13,9 @@ public:
 
 
 
-    bool IsShootPressed() const;
+    /*bool IsShootPressed() const;*/
 
-    void Fire();
+    bool CanFire();
     Vector2 GetProjectileSpawnPos() const;
 
     Vector2 GetPosition() const { return m_position; }

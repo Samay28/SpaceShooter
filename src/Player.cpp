@@ -105,14 +105,19 @@ void Player::Move(float deltaTime, float speedMultiplier)
     );
 }
 
-bool Player::IsShootPressed() const
-{
-    return IsKeyDown(KEY_SPACE) && m_shootCooldown <=0.f;
-}
+//bool Player::IsShootPressed() const
+//{
+//    return IsKeyDown(KEY_SPACE) && m_shootCooldown <=0.f;
+//}
 
-void Player::Fire()
+bool Player::CanFire()
 {
-    m_shootCooldown = m_shootInterval; // Reset the cooldown timer after shooting
+    if (m_shootCooldown <= 0)
+    {   
+        m_shootCooldown = m_shootInterval;
+        return true;
+    }
+    return false;
 }
 
 void Player::UpdateCooldown(float deltaTime)
@@ -124,6 +129,7 @@ void Player::UpdateCooldown(float deltaTime)
         if (m_shootCooldown < 0.0f)
         {
             m_shootCooldown = 0.0f;
+
         }
     }
 }
