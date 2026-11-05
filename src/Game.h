@@ -65,6 +65,9 @@ private:
     //--------------Enemy Management----------------
     void CleanupEnemies(GameWorld& world);
 
+    //--------------Ally Management----------------
+    void CleanupAllies(GameWorld& world);
+
     void RestartGame();
     void EndGame();
     void PauseGame();

@@ -314,6 +314,7 @@ void Game::UpdateSimulation(float fixedDeltaTime)
 
     CleanupProjectiles(m_world);
     CleanupEnemies(m_world);
+    CleanupAllies(m_world);
 
     m_profiler.End("Cleanup");
 
@@ -498,6 +499,33 @@ void Game::CleanupEnemies(GameWorld& world)
         world.enemyHealth.pop_back();
         world.enemyPositions.pop_back();
         world.enemyVelocities.pop_back();
+    }
+}
+
+void Game::CleanupAllies(GameWorld& world)
+{
+    size_t i = 0;
+    while (i < world.allies.size())
+    {
+        if (world.allyHealth[i].currentHealth > 0.0f)
+        {
+            ++i;
+            continue;
+        }
+        const size_t last =
+            world.allies.size() - 1;
+        if (i != last)
+        {
+            world.allies[i] =
+                world.allies[last];
+            world.allyHealth[i] =
+                world.allyHealth[last];
+            world.allyPositions[i] =
+                world.allyPositions[last];
+        }
+        world.allies.pop_back();
+        world.allyHealth.pop_back();
+        world.allyPositions.pop_back();
     }
 }
 
