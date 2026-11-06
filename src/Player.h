@@ -12,9 +12,6 @@ public:
     void Render() const;
 
 
-
-    /*bool IsShootPressed() const;*/
-
     bool CanFire();
     Vector2 GetProjectileSpawnPos() const;
 

@@ -105,10 +105,6 @@ void Player::Move(float deltaTime, float speedMultiplier)
     );
 }
 
-//bool Player::IsShootPressed() const
-//{
-//    return IsKeyDown(KEY_SPACE) && m_shootCooldown <=0.f;
-//}
 
 bool Player::CanFire()
 {
