@@ -11,7 +11,6 @@ The goal of the project is to keep gameplay code simple while demonstrating how 
 | Input             | Action                  |
 | ----------------- | ----------------------- |
 | **W / A / S / D** | Move                    |
-| **SPACE**         | Shoot                   |
 | **R**             | Restart after Game Over |
 | **ESC**           | Quit                    |
 | **F3**            | Toggle Profiler         |
